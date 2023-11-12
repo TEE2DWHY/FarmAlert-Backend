@@ -30,7 +30,7 @@ const register = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.CREATED).json({
     name: agent.fullName,
     msg: `User is Created Successfully.`,
-    token: verificationToken,
+    verificationToken: verificationToken,
   });
 });
 
@@ -53,6 +53,10 @@ const verifyEmail = asyncWrapper(async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json({
       msg: "Invalid Registration Token",
     });
+  } else if (agent.isEmailVerified === true) {
+    return res.status(StatusCodes.OK).json({
+      msg: `${agent.email} is Already Verified.`,
+    });
   }
   res.status(StatusCodes.OK).json({
     msg: "Email is now Verified.",
@@ -62,15 +66,14 @@ const verifyEmail = asyncWrapper(async (req, res) => {
 // Login
 const login = asyncWrapper(async (req, res) => {
   const { email, password } = req.body;
-
   const agent = await Agent.findOne({ email: email });
-  if (agent.isEmailVerified === false) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: "Please Verify Email Before Login.",
-    });
-  } else if (!agent) {
+  if (!agent) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       msg: "Incorrect Email or Password.",
+    });
+  } else if (agent.isEmailVerified === false) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      msg: "Please Verify Email Before Login.",
     });
   }
   const passwordMatch = await bcrypt.compare(password, agent.password);
