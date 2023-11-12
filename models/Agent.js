@@ -9,6 +9,10 @@ const agentSchema = new mongoose.Schema({
     required: [true, "Please Provide Email"],
     unique: [true, "Email Already Exist."],
   },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
   phoneNumber: {
     type: String,
     required: [true, "Please Provide Phone Number"],
