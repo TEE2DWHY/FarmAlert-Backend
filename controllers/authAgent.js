@@ -40,12 +40,13 @@ const register = asyncWrapper(async (req, res) => {
 
 // Verify Email
 const verifyEmail = asyncWrapper(async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-  if (!token) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token",
     });
   }
+  const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { userId } = decodedToken;
   const agent = await Agent.findOne({ _id: userId });
