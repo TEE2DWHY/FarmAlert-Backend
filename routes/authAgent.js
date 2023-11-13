@@ -1,8 +1,16 @@
 const router = require("express").Router();
-const { register, login, verifyEmail } = require("../controllers/authAgent");
+const {
+  register,
+  login,
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+} = require("../controllers/authAgent");
 
 router.post("/agent/register", register);
-router.post("/agent/verify-email", verifyEmail);
+router.get("/agent/verify-email", verifyEmail);
 router.post("/agent/login", login);
+router.post("/agent/forgot-password", forgotPassword);
+router.post("/agent/reset-password", resetPassword);
 
 module.exports = router;
