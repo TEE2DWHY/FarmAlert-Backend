@@ -44,20 +44,19 @@ const verifyEmail = asyncWrapper(async (req, res) => {
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const email = decodedToken.email;
-  const agent = await Agent.findOneAndUpdate(
-    { email },
-    { $set: { isEmailVerified: true } },
-    { new: true }
-  );
+  const agent = await Agent.findOne({ email });
   if (!agent) {
     return res.status(StatusCodes.NOT_FOUND).json({
       msg: "Invalid Registration Token",
     });
-  } else if (agent.isEmailVerified === true) {
+  }
+  if (agent.isEmailVerified === true) {
     return res.status(StatusCodes.OK).json({
       msg: `${agent.email} is Already Verified.`,
     });
   }
+  agent.isEmailVerified = true;
+  await agent.save();
   res.status(StatusCodes.OK).json({
     msg: "Email is now Verified.",
   });
