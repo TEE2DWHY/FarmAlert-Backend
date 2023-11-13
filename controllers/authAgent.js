@@ -14,7 +14,7 @@ const register = asyncWrapper(async (req, res) => {
   const { password, confirmPassword } = req.body;
   if (password !== confirmPassword) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Password Mismatch.",
+      message: "Password Mismatch.",
     });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -33,7 +33,7 @@ const register = asyncWrapper(async (req, res) => {
   });
   res.status(StatusCodes.CREATED).json({
     name: agent.fullName,
-    msg: `User is Created Successfully.`,
+    message: `User is Created Successfully.`,
     verificationToken: verificationToken,
   });
 });
@@ -43,7 +43,7 @@ const verifyEmail = asyncWrapper(async (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Please Provide Token",
+      message: "Please Provide Token",
     });
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -51,18 +51,18 @@ const verifyEmail = asyncWrapper(async (req, res) => {
   const agent = await Agent.findOne({ _id: userId });
   if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Invalid Registration Token",
+      message: "Invalid Registration Token",
     });
   }
   if (agent.isEmailVerified === true) {
     return res.status(StatusCodes.OK).json({
-      msg: `${agent.email} is Already Verified.`,
+      message: `${agent.email} is Already Verified.`,
     });
   }
   agent.isEmailVerified = true;
   await agent.save();
   res.status(StatusCodes.OK).json({
-    msg: "Email is now Verified.",
+    message: "Email is now Verified.",
   });
 });
 
@@ -71,31 +71,31 @@ const login = asyncWrapper(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Please provide email and password.",
+      message: "Please provide email and password.",
     });
   }
   const agent = await Agent.findOne({ email: email });
   if (!agent) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: "Incorrect Email or Password.",
+      message: "Incorrect Email or Password.",
     });
   }
   const passwordMatch = await bcrypt.compare(password, agent.password);
   if (!passwordMatch) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Incorrect Password.",
+      message: "Incorrect Password.",
     });
   }
   if (agent.isEmailVerified === false) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: "Please Verify Email Before Login.",
+      message: "Please Verify Email Before Login.",
     });
   }
   const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_LIFETIME,
   });
   res.status(StatusCodes.OK).json({
-    msg: "Login is Successful.",
+    message: "Login is Successful.",
     token: token,
   });
 });
@@ -105,23 +105,23 @@ const forgotPassword = asyncWrapper(async (req, res) => {
   const { email } = req.body;
   if (!email) {
     return res.status(StatusCodes.OK).json({
-      msg: "Please Provide Email.",
+      message: "Please Provide Email.",
     });
   }
   const agent = await Agent.findOne({ email: email });
   if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "User does not exit.",
+      message: "User does not exit.",
     });
   }
   const resetPasswordToken = jwt.sign({ email: email }, process.env.JWT_SECRET);
   await sendEmail({
     email: agent.email,
-    subject: "EVOV- RESET PASSWORD",
+    subject: "CIMA- RESET PASSWORD",
     message: resetPasswordMessage(resetPasswordToken),
   });
   res.status(StatusCodes.OK).json({
-    msg: "Reset password email sent",
+    message: "Reset password email sent",
     resetPasswordToken: resetPasswordToken,
   });
 });
@@ -131,18 +131,18 @@ const resetPassword = asyncWrapper(async (req, res) => {
   const { newPassword, confirmPassword } = req.body;
   if (newPassword !== confirmPassword) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Password Mismatch.",
+      message: "Password Mismatch.",
     });
   } else if (!newPassword || !confirmPassword) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Please Provide Password or Confirm Password",
+      message: "Please Provide Password or Confirm Password",
     });
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   const token = req.headers.authorization.split(" ")[1];
   if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "Please Provide Token.",
+      message: "Please Provide Token.",
     });
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -150,13 +150,13 @@ const resetPassword = asyncWrapper(async (req, res) => {
   const agent = await Agent.findOne({ email: email });
   if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      msg: "User not Found.",
+      message: "User not Found.",
     });
   }
   agent.password = hashedPassword;
   await agent.save();
   res.status(StatusCodes.OK).json({
-    msg: "Password is Successfully Updated.",
+    message: "Password is Successfully Updated.",
   });
 });
 

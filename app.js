@@ -9,8 +9,8 @@ const notFound = require("./middleware/notFound");
 
 // middleware
 app.use(express.json());
-app.use("/api/v1/auth", authAgentRouter);
-app.use("/api/v1/auth", authUserRouter);
+app.use("/auth", authAgentRouter);
+app.use("/auth", authUserRouter);
 app.use(errorHandler);
 app.use(notFound);
 
