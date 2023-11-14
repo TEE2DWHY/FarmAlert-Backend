@@ -101,7 +101,7 @@ const login = asyncWrapper(async (req, res) => {
   });
 });
 
-// forgot password
+// Forgot password
 const forgotPassword = asyncWrapper(async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -127,7 +127,7 @@ const forgotPassword = asyncWrapper(async (req, res) => {
   });
 });
 
-// reset password
+// Reset password
 const resetPassword = asyncWrapper(async (req, res) => {
   const { newPassword, confirmPassword } = req.body;
   if (newPassword !== confirmPassword) {
