@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = (option) => {
-  return new Promise((resolve, reject) => {
+const sendEmail = async ({ email, subject, message }) => {
+  try {
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -9,20 +9,19 @@ const sendEmail = (option) => {
         pass: process.env.GMAIL_PASSWORD,
       },
     });
+
     let mailOptions = {
       from: process.env.GMAIL_USERNAME,
-      to: option.email,
-      subject: option.subject,
-      html: option.message,
+      to: email,
+      subject: subject,
+      html: message,
     };
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(info);
-      }
-    });
-  });
+
+    let info = await transporter.sendMail(mailOptions);
+    return info;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const verifyEmailMessage = (verificationToken, name) => {
