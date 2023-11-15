@@ -40,13 +40,13 @@ const register = asyncWrapper(async (req, res) => {
 
 // Verify Email
 const verifyEmail = asyncWrapper(async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
+  const authToken = req.headers.authorization;
+  if (!authToken) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Provide Token",
+      message: "Please Provide Token.",
     });
   }
-  const token = authHeader.split(" ")[1];
+  const token = authToken.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { userId } = decodedToken;
   const agent = await Agent.findOne({ _id: userId });
@@ -115,7 +115,10 @@ const forgotPassword = asyncWrapper(async (req, res) => {
       message: "User does not exit.",
     });
   }
-  const resetPasswordToken = jwt.sign({ email: email }, process.env.JWT_SECRET);
+  const resetPasswordToken = jwt.sign(
+    { agentId: agent._id, email: email },
+    process.env.JWT_SECRET
+  );
   await sendEmail({
     email: agent.email,
     subject: "CIMA- RESET PASSWORD",
@@ -140,15 +143,16 @@ const resetPassword = asyncWrapper(async (req, res) => {
     });
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
-  const token = req.headers.authorization.split(" ")[1];
-  if (!token) {
+  const authToken = req.headers.authorization;
+  if (!authToken) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token.",
     });
   }
+  const token = authToken.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const { email } = decodedToken;
-  const agent = await Agent.findOne({ email: email });
+  const { agentId } = decodedToken;
+  const agent = await Agent.findOne({ email: agentId });
   if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "User not Found.",
