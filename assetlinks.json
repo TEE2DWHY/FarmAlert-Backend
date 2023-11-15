@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.farm_alert.org",
+      "sha256_cert_fingerprints": [
+        "0E:1B:C6:34:54:D4:57:8A:53:71:5D:4B:6E:BC:95:E1:23:15:D5:3D:8F:65:AA:98:22:8D:1A:0B:A9:08:B7:53"
+      ]
+    }
+  }
+]
