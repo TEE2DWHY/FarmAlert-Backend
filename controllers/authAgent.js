@@ -40,13 +40,13 @@ const register = asyncWrapper(async (req, res) => {
 
 // Verify Email
 const verifyEmail = asyncWrapper(async (req, res) => {
-  const authToken = req.headers.authorization;
-  if (!authToken) {
+  const { token } = req.query;
+  console.log(req.query);
+  if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token.",
     });
   }
-  const token = authToken.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { userId } = decodedToken;
   const agent = await Agent.findOne({ _id: userId });
@@ -143,13 +143,12 @@ const resetPassword = asyncWrapper(async (req, res) => {
     });
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
-  const authToken = req.headers.authorization;
-  if (!authToken) {
+  const { token } = req.query;
+  if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token.",
     });
   }
-  const token = authToken.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { agentId } = decodedToken;
   const agent = await Agent.findOne({ email: agentId });

@@ -40,9 +40,8 @@ const register = asyncWrapper(async (req, res) => {
 
 // Verify email
 const verifyEmail = asyncWrapper(async (req, res) => {
-  const authToken = req.headers.authorization;
-  const token = authToken.split(" ")[1];
-  if (!authToken) {
+  const { token } = req.query;
+  if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token.",
     });
@@ -137,13 +136,12 @@ const resetPassword = asyncWrapper(async (req, res) => {
     });
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
-  const authToken = req.headers.authorization;
-  if (!authToken) {
+  const { token } = req.query;
+  if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token.",
     });
   }
-  const token = authToken.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { userId } = decodedToken;
   const user = await User.findOne({ _id: userId });
