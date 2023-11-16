@@ -54,6 +54,11 @@ const verifyEmail = asyncWrapper(async (req, res) => {
       message: "Invalid Token.",
     });
   }
+  if (user.isEmailVerified === true) {
+    return res.status(StatusCodes.OK).json({
+      message: "Email is Already Verified.",
+    });
+  }
   user.isEmailVerified = true;
   await user.save();
   res.status(StatusCodes.OK).json({
@@ -82,8 +87,20 @@ const login = asyncWrapper(async (req, res) => {
     });
   }
   if (user.isEmailVerified === false) {
+    const verificationToken = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_LIFETIME,
+      }
+    );
+    await sendEmail({
+      email: user.email,
+      subject: "VERIFY YOUR EMAIL - CIMA APP",
+      message: verifyEmailMessage(verificationToken, user.fullName),
+    });
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Verify Email.",
+      message: "A verification link has been sent. Please Verify Email.",
     });
   }
   const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {

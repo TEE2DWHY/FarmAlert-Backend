@@ -88,8 +88,21 @@ const login = asyncWrapper(async (req, res) => {
     });
   }
   if (agent.isEmailVerified === false) {
+    const verificationToken = jwt.sign(
+      { userId: agent._id, email: agent.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_LIFETIME,
+      }
+    );
+    await sendEmail({
+      email: agent.email,
+      subject: "VERIFY YOUR EMAIL - CIMA APP",
+      message: verifyEmailMessage(verificationToken, agent.fullName),
+    });
     return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Please Verify Email Before Login.",
+      message:
+        "A verification link has been sent. Please Verify Email Before Login.",
     });
   }
   const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
