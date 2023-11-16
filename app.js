@@ -5,7 +5,7 @@ const connect = require("./db/connect");
 const cors = require("cors");
 const xss = require("xss-clean");
 const helmet = require("helmet");
-const rateLimiter = require("express-rate-limiter");
+const rateLimiter = require("express-rate-limit");
 const authAgentRouter = require("./routes/authAgent");
 const authUserRouter = require("./routes/authUser");
 const errorHandler = require("./middleware/errorHandler");
@@ -16,7 +16,6 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(xss());
-
 app.use(
   rateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
