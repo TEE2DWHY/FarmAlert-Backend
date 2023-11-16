@@ -11,6 +11,7 @@ const notFound = require("./middleware/notFound");
 app.use(express.json());
 app.use("/auth", authAgentRouter);
 app.use("/auth", authUserRouter);
+app.use(express.static("./public"));
 app.use(errorHandler);
 app.use(notFound);
 
