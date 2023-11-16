@@ -29,7 +29,7 @@ const register = asyncWrapper(async (req, res) => {
   await sendEmail({
     email: user.email,
     subject: "VERIFY YOUR EMAIL - CIMA APP",
-    message: verifyEmailMessage(verificationToken, user.fullName),
+    message: verifyEmailMessage(verificationToken, "user", user.fullName),
   });
   res.status(StatusCodes.CREATED).json({
     name: user.fullName,
@@ -97,7 +97,7 @@ const login = asyncWrapper(async (req, res) => {
     await sendEmail({
       email: user.email,
       subject: "VERIFY YOUR EMAIL - CIMA APP",
-      message: verifyEmailMessage(verificationToken, user.fullName),
+      message: verifyEmailMessage(verificationToken, "user", user.fullName),
     });
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "A verification link has been sent. Please Verify Email.",

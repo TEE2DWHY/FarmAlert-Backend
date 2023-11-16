@@ -24,7 +24,7 @@ const sendEmail = async ({ email, subject, message }) => {
   }
 };
 
-const verifyEmailMessage = (verificationToken, name) => {
+const verifyEmailMessage = (verificationToken, currentUser, name) => {
   return `
   <!DOCTYPE html>
     <html>
@@ -55,7 +55,7 @@ const verifyEmailMessage = (verificationToken, name) => {
           <p>We are super excited to have you here. Trust me, we waited a long time to have you on board, and here you are.
           It's impressive that you've taken such a bold step to become a better version of yourself, we are glad to help you walk through this journey.
           <br/> <br/>
-          <span class="link">Kindly click this <a href=${process.env.BASE_URL}/api/v1/verify-email?token=${verificationToken}>link</a> to verify your account.</span>
+          <span class="link">Kindly click this <a href=${process.env.BASE_URL}/auth/${currentUser}/verify-email?token=${verificationToken}>link</a> to verify your account.</span>
           <br/>
           Stay tuned for insightful newsletter and other pertinent updates.
           <br/> <br/>

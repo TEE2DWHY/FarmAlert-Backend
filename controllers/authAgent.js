@@ -29,7 +29,7 @@ const register = asyncWrapper(async (req, res) => {
   await sendEmail({
     email: agent.email,
     subject: "VERIFY YOUR EMAIL - CIMA APP",
-    message: verifyEmailMessage(verificationToken, agent.fullName),
+    message: verifyEmailMessage(verificationToken, "agent", agent.fullName),
   });
   res.status(StatusCodes.CREATED).json({
     name: agent.fullName,
@@ -98,7 +98,7 @@ const login = asyncWrapper(async (req, res) => {
     await sendEmail({
       email: agent.email,
       subject: "VERIFY YOUR EMAIL - CIMA APP",
-      message: verifyEmailMessage(verificationToken, agent.fullName),
+      message: verifyEmailMessage(verificationToken, "agent", agent.fullName),
     });
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message:
