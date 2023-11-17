@@ -4,14 +4,14 @@ const authorization = async (req, res) => {
   const authToken = req.headers.authorization;
   if (!authToken || !authToken.startsWith("Bearer")) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: "Unauthorized User.",
+      message: "Unauthorized User.",
     });
   }
   const token = authToken.split(" ")[1];
   const user = jwt.verify(token, process.env.JWT_SECRET);
   if (!user) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: "Invalid Token",
+      message: "Invalid Token",
     });
   }
   const { id } = user;

@@ -27,10 +27,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: {
-      values: ["farmer owner", " veterinarian,"],
-      message: "${VALUES} is not supported.",
-    },
+    required: [true, "Please Provide Role"],
   },
   farm: {
     type: String,

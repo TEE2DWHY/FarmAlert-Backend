@@ -1,13 +1,13 @@
-const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const asyncWrapper = require("../middleware/asyncWrapper");
+const Agent = require("../../models/Agent");
+const asyncWrapper = require("../../middleware/asyncWrapper");
 const { StatusCodes } = require("http-status-codes");
 const {
   sendEmail,
   verifyEmailMessage,
   resetPasswordMessage,
-} = require("../utils/email");
+} = require("../../utils/email");
 
 // Register
 const register = asyncWrapper(async (req, res) => {
@@ -18,29 +18,30 @@ const register = asyncWrapper(async (req, res) => {
     });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await User.create({ ...req.body, password: hashedPassword });
+  const agent = await Agent.create({ ...req.body, password: hashedPassword });
   const verificationToken = jwt.sign(
-    { userId: user._id, email: user.email },
+    { userId: agent._id, email: agent.email },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_LIFETIME,
     }
   );
   await sendEmail({
-    email: user.email,
+    email: agent.email,
     subject: "VERIFY YOUR EMAIL - CIMA APP",
-    message: verifyEmailMessage(verificationToken, "user", user.fullName),
+    message: verifyEmailMessage(verificationToken, "agent", agent.fullName),
   });
   res.status(StatusCodes.CREATED).json({
-    name: user.fullName,
-    msg: `User is Created Successfully.`,
+    name: agent.fullName,
+    message: `User is Created Successfully.`,
     verificationToken: verificationToken,
   });
 });
 
-// Verify email
+// Verify Email
 const verifyEmail = asyncWrapper(async (req, res) => {
   const { token } = req.query;
+  console.log(req.query);
   if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token.",
@@ -48,21 +49,21 @@ const verifyEmail = asyncWrapper(async (req, res) => {
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { userId } = decodedToken;
-  const user = await User.findOne({ _id: userId });
-  if (!user) {
+  const agent = await Agent.findOne({ _id: userId });
+  if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Invalid Token.",
+      message: "Invalid Registration Token",
     });
   }
-  if (user.isEmailVerified === true) {
+  if (agent.isEmailVerified === true) {
     return res.status(StatusCodes.OK).json({
-      message: "Email is Already Verified.",
+      message: `${agent.email} is Already Verified.`,
     });
   }
-  user.isEmailVerified = true;
-  await user.save();
+  agent.isEmailVerified = true;
+  await agent.save();
   res.status(StatusCodes.OK).json({
-    message: "Email Verification is Successful.",
+    message: "Email is now Verified.",
   });
 });
 
@@ -71,43 +72,44 @@ const login = asyncWrapper(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Provide Email and Password.",
+      message: "Please provide email and password.",
     });
   }
-  const user = await User.findOne({ email: email });
-  if (!user) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "User does not Exist.",
+  const agent = await Agent.findOne({ email: email });
+  if (!agent) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: "Incorrect Email or Password.",
     });
   }
-  const passwordMatch = await bcrypt.compare(password, user.password);
+  const passwordMatch = await bcrypt.compare(password, agent.password);
   if (!passwordMatch) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Incorrect Password",
+      message: "Incorrect Password.",
     });
   }
-  if (user.isEmailVerified === false) {
+  if (agent.isEmailVerified === false) {
     const verificationToken = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: agent._id, email: agent.email },
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_LIFETIME,
       }
     );
     await sendEmail({
-      email: user.email,
+      email: agent.email,
       subject: "VERIFY YOUR EMAIL - CIMA APP",
-      message: verifyEmailMessage(verificationToken, "user", user.fullName),
+      message: verifyEmailMessage(verificationToken, "agent", agent.fullName),
     });
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "A verification link has been sent. Please Verify Email.",
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message:
+        "A verification link has been sent. Please Verify Email Before Login.",
     });
   }
   const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_LIFETIME,
   });
   res.status(StatusCodes.OK).json({
-    message: "Login is Successful",
+    message: "Login is Successful.",
     token: token,
   });
 });
@@ -116,26 +118,23 @@ const login = asyncWrapper(async (req, res) => {
 const forgotPassword = asyncWrapper(async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(StatusCodes.OK).json({
       message: "Please Provide Email.",
     });
   }
-  const user = await User.findOne({ email: email });
-  if (!user) {
+  const agent = await Agent.findOne({ email: email });
+  if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "User does not Exist",
+      message: "User does not exit.",
     });
   }
   const resetPasswordToken = jwt.sign(
-    { userId: user._id, email: email },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_LIFETIME,
-    }
+    { agentId: agent._id, email: email },
+    process.env.JWT_SECRET
   );
   await sendEmail({
-    email: user.email,
-    subject: "RESET YOUR PASSWORD - CIMA APP",
+    email: agent.email,
+    subject: "CIMA- RESET PASSWORD",
     message: resetPasswordMessage(resetPasswordToken),
   });
   res.status(StatusCodes.OK).json({
@@ -151,6 +150,10 @@ const resetPassword = asyncWrapper(async (req, res) => {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Password Mismatch.",
     });
+  } else if (!newPassword || !confirmPassword) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Please Provide Password or Confirm Password",
+    });
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   const { token } = req.query;
@@ -160,24 +163,24 @@ const resetPassword = asyncWrapper(async (req, res) => {
     });
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const { userId } = decodedToken;
-  const user = await User.findOne({ _id: userId });
-  if (!user) {
+  const { agentId } = decodedToken;
+  const agent = await Agent.findOne({ email: agentId });
+  if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Invalid Token.",
+      message: "User not Found.",
     });
   }
-  user.password = hashedPassword;
-  await user.save();
+  agent.password = hashedPassword;
+  await agent.save();
   res.status(StatusCodes.OK).json({
-    message: "Password Reset is Successful.",
+    message: "Password is Successfully Updated.",
   });
 });
 
 module.exports = {
   register,
-  verifyEmail,
   login,
+  verifyEmail,
   forgotPassword,
   resetPassword,
 };

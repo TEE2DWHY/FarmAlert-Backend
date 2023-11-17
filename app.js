@@ -1,15 +1,19 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+// Db connection
 const connect = require("./db/connect");
+// middleWares
 const cors = require("cors");
 const xss = require("xss-clean");
 const helmet = require("helmet");
 const rateLimiter = require("express-rate-limit");
-const authAgentRouter = require("./routes/authAgent");
-const authUserRouter = require("./routes/authUser");
 const errorHandler = require("./middleware/errorHandler");
 const notFound = require("./middleware/notFound");
+// Router(s)
+const authAgentRouter = require("./routes/auth/authAgent");
+const authUserRouter = require("./routes/auth/authUser");
+const cattleRouter = require("./routes/profiling/cattle");
 
 // middleware
 app.use(express.json());
@@ -24,6 +28,7 @@ app.use(
 );
 app.use("/auth", authAgentRouter);
 app.use("/auth", authUserRouter);
+app.use("/cattle", cattleRouter);
 app.use(express.static("./public"));
 app.use(errorHandler);
 app.use(notFound);
