@@ -6,6 +6,7 @@ const fs = require("fs");
 const moment = require("moment");
 
 const register = asyncWrapper(async (req, res) => {
+  let result;
   if (!req.file) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Upload Image.",
@@ -20,7 +21,6 @@ const register = asyncWrapper(async (req, res) => {
       message: "Invalid Date Format.",
     });
   }
-  let result;
   try {
     result = await cloudinary.uploader.upload(path);
     const cattle = await Cattle.create({
