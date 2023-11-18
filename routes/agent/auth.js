@@ -6,7 +6,7 @@ const {
   verifyEmail,
   forgotPassword,
   resetPassword,
-} = require("../../controllers/auth/authAgent");
+} = require("../../controllers/agent/auth");
 
 appRouter.post("/agent/register", register);
 appRouter.get("/agent/verify-email", verifyEmail);

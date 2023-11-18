@@ -103,9 +103,13 @@ const login = asyncWrapper(async (req, res) => {
       message: "A verification link has been sent. Please Verify Email.",
     });
   }
-  const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
-  });
+  const token = jwt.sign(
+    { _id: user._id, email: email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_LIFETIME,
+    }
+  );
   res.status(StatusCodes.OK).json({
     message: "Login is Successful",
     token: token,
