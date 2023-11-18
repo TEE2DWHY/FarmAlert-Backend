@@ -33,12 +33,12 @@ const register = asyncWrapper(async (req, res) => {
       cattle: cattle,
     });
   } catch (err) {
-    if (result) {
-      await cloudinary.uploader.destroy(result.public_id);
-    }
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: err.message,
     });
+    if (result) {
+      await cloudinary.uploader.destroy(result.public_id);
+    }
   }
 });
 
