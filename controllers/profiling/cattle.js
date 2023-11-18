@@ -8,15 +8,20 @@ const moment = require("moment");
 const register = asyncWrapper(async (req, res) => {
   let result;
   try {
+    if (!req.path.file) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Please Provide Vaccination Image.",
+      });
+    }
     const { vaccinationDate, dateOfTreatment } = req.body;
     const parsedVaccineDate = moment(vaccinationDate, "DD-MM-YYYY");
     const parsedDateOfTreatment = moment(dateOfTreatment, "DD-MM-YYYY");
     if (!parsedVaccineDate.isValid() || !parsedDateOfTreatment.isValid()) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Invalid Date Format",
+        message: "Invalid Date Format.",
       });
     }
-    result = await cloudinary.uploader.upload(req.file.path);
+    result = await cloudinary.uploader.upload(path);
     const cattle = await Cattle.create({
       ...req.body,
       image: result.secure_url,
