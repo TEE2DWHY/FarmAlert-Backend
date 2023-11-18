@@ -14,6 +14,7 @@ const notFound = require("./middleware/notFound");
 const authAgentRouter = require("./routes/auth/authAgent");
 const authUserRouter = require("./routes/auth/authUser");
 const cattleRouter = require("./routes/profiling/cattle");
+const salesRouter = require("./routes/sales/cattle");
 
 // middleware
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use(
 app.use("/auth", authAgentRouter);
 app.use("/auth", authUserRouter);
 app.use("/cattle", cattleRouter);
+app.use("/sales", salesRouter);
 app.use(express.static("./public"));
 app.use(errorHandler);
 app.use(notFound);
