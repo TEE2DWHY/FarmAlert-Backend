@@ -8,8 +8,10 @@ const cors = require("cors");
 const xss = require("xss-clean");
 const helmet = require("helmet");
 const rateLimiter = require("express-rate-limit");
+const upload = require("./utils/multer"); // Import your multer configuration
 const errorHandler = require("./middleware/errorHandler");
 const notFound = require("./middleware/notFound");
+
 // Router(s)
 const authAgentRouter = require("./routes/auth/authAgent");
 const authUserRouter = require("./routes/auth/authUser");
@@ -29,7 +31,7 @@ app.use(
 );
 app.use("/auth", authAgentRouter);
 app.use("/auth", authUserRouter);
-app.use("/cattle", cattleRouter);
+app.use("/cattle", upload.single("image"), cattleRouter);
 app.use("/sales", salesRouter);
 app.use(express.static("./public"));
 app.use(errorHandler);

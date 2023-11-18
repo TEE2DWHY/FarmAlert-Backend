@@ -16,6 +16,7 @@ const errorHandler = async (err, req, res, next) => {
       message: `${err.value} is not found in database.`,
     });
   }
+  console.log(err);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     message: err.message,
   });

@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const Sales = require("../../models/Sales");
 const { StatusCodes } = require("http-status-codes");
 
 // Register
 const register = asyncWrapper(async (req, res) => {
+  console.log(req);
   const newRecord = await Sales.create({ ...req.body });
   res.status(StatusCodes.CREATED).json({
     message: "New Sales Recorded Added.",

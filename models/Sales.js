@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
-
+const { customAlphabet } = require("nanoid");
+const nanoid = customAlphabet("0123456789abcde", 5);
 const salesSchema = new mongoose.Schema({
   Id: {
     type: String,
+    default: nanoid(),
   },
   uniqueNumber: {
     type: String,

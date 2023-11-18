@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { customAlphabet } = require("nanoid");
-const nanoId = customAlphabet("1234567890abcde");
+const nanoId = customAlphabet("1234567890abcde", 5);
 
 const cattleSchema = new mongoose.Schema({
   Id: {
@@ -12,7 +12,7 @@ const cattleSchema = new mongoose.Schema({
     required: [true, "Please Provide Farm Number"],
   },
   vaccinationDate: {
-    type: Date,
+    type: String,
     required: [true, "Please Specify Date of Vaccination"],
   },
   vaccineType: {
@@ -28,7 +28,7 @@ const cattleSchema = new mongoose.Schema({
     required: [true, "Please Specify Name of Veterinarian"],
   },
   dateOfTreatment: {
-    type: Date,
+    type: String,
     required: [true, "Please Specify Date of Treatment"],
   },
   treatmentType: {
@@ -37,6 +37,7 @@ const cattleSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+    required: [true, "Please Provide Vaccination Image"],
   },
 });
 
