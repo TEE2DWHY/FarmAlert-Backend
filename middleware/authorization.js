@@ -10,7 +10,7 @@ const authorization = async (req, res) => {
   }
   const token = authToken.split(" ")[1];
   const user = jwt.verify(token, process.env.JWT_SECRET);
-  console.log(user);
+  // console.log(user);
   if (!user) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: "Invalid Token",

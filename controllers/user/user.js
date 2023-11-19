@@ -15,8 +15,15 @@ const allUsers = asyncWrapper(async (req, res) => {
 
 // Get a Specific User
 const getUser = asyncWrapper(async (req, res) => {
-  const { id } = req.user;
-  const user = await User.findOne({ _id: id });
+  const { token } = req.query;
+  if (!token) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Please Provide Token.",
+    });
+  }
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const { userId } = decodedToken;
+  const user = await User.findOne({ _id: userId });
   if (!user) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Invalid Token.",
@@ -24,7 +31,12 @@ const getUser = asyncWrapper(async (req, res) => {
   }
   res.status(StatusCodes.OK).json({
     message: {
-      user: user,
+      user: {
+        name: user.fullName,
+        email: user.email,
+        isVerified: user.isEmailVerified,
+        Id: user.Id,
+      },
     },
   });
 });
