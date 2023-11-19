@@ -1,7 +1,12 @@
 const appRouter = require("../../utils/appRouter");
-const { getUser, allUsers } = require("../../controllers/user/user");
+const {
+  getUser,
+  allUsers,
+  deleteUser,
+} = require("../../controllers/user/user");
 
 appRouter.get("/user", getUser);
 appRouter.get("/all-user", allUsers);
+appRouter.delete("/user", deleteUser);
 
 module.exports = appRouter;
