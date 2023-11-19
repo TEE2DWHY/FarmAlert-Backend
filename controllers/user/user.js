@@ -5,10 +5,15 @@ const jwt = require("jsonwebtoken");
 
 // Get all users
 const allUsers = asyncWrapper(async (req, res) => {
-  const user = await User.find();
+  const users = await User.find();
   res.status(StatusCodes.OK).json({
     message: {
-      allUsers: user,
+      allUsers: users.map((user) => ({
+        name: user.fullName,
+        email: user.email,
+        isVerified: user.isEmailVerified,
+        Id: user.Id,
+      })),
     },
   });
 });
