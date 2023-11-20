@@ -28,15 +28,19 @@ const agentSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: [true, "Please Provide Address."],
+    required: [true, "Please Specify Your Address."],
     // enum: {
     //   values: ["abuja", "lagos", "kogi", "ogun"],
     //   message: "{VALUE} is not supported",
     // },
   },
+  state: {
+    type: String,
+    required: [true, "Please Specify Your State"],
+  },
   lga: {
     type: String,
-    required: [true, "Please Provide LGA"],
+    required: [true, "Please Specify Your LGA"],
   },
   farm: {
     type: String,

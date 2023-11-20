@@ -31,15 +31,15 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: [true, "Please Provide Address."],
-    // enum: {
-    //   values: ["abuja", "lagos", "kogi", "ogun"],
-    //   message: "{VALUE} is not supported",
-    // },
+    required: [true, "Please Specify Your Address."],
+  },
+  state: {
+    type: String,
+    required: [true, "Please Specify Your State"],
   },
   lga: {
     type: String,
-    required: [true, "Please Provide LGA"],
+    required: [true, "Please Specify Your LGA"],
   },
   healthRecords: {
     type: String,

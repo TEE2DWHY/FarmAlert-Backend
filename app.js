@@ -20,6 +20,7 @@ const cattleRouter = require("./routes/profiling/cattle");
 const salesRouter = require("./routes/sales/cattle");
 const userRouter = require("./routes/user/user");
 const agentRouter = require("./routes/agent/agent");
+const lgaRouter = require("./routes/lga");
 
 // middleware
 app.use(express.json());
@@ -34,7 +35,7 @@ app.use(
 );
 app.use("/auth", authAgentRouter);
 app.use("/auth", authUserRouter);
-app.use(userRouter, agentRouter);
+app.use(userRouter, agentRouter, lgaRouter);
 app.use("/cattle", upload.single("image"), cattleRouter);
 app.use("/sales", salesRouter);
 app.use(express.static("./public"));
