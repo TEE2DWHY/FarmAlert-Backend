@@ -78,7 +78,7 @@ const login = asyncWrapper(async (req, res) => {
   const agent = await Agent.findOne({ email: email });
   if (!agent) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Incorrect Email or Password.",
+      message: "User does not Exist.",
     });
   }
   const passwordMatch = await bcrypt.compare(password, agent.password);
@@ -105,9 +105,13 @@ const login = asyncWrapper(async (req, res) => {
         "A verification link has been sent. Please Verify Email Before Login.",
     });
   }
-  const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
-  });
+  const token = jwt.sign(
+    { userId: agent._id, email: email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_LIFETIME,
+    }
+  );
   res.status(StatusCodes.OK).json({
     message: "Login is Successful.",
     token: token,
