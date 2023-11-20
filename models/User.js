@@ -29,13 +29,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Role"],
   },
-  farm: {
+  address: {
     type: String,
-    required: [true, "Please Provide Farm Name"],
+    required: [true, "Please Provide Address."],
     // enum: {
     //   values: ["abuja", "lagos", "kogi", "ogun"],
     //   message: "{VALUE} is not supported",
     // },
+  },
+  lga: {
+    type: String,
+    required: [true, "Please Provide LGA"],
   },
   healthRecords: {
     type: String,
@@ -52,6 +56,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Password"],
   },
+  vcnNumber: {
+    type: String,
+    required: function () {
+      return this.role === "veterinarian";
+    },
+  },
+  practiceName: {
+    type: String,
+    required: function () {
+      return this.role === "veterinarian";
+    },
+  },
+});
+
+userSchema.pre("save", function (next) {
+  if (this.role !== "veterinarian") {
+    this.vcnNumber = undefined;
+    this.practiceName = undefined;
+  }
+  next();
 });
 
 module.exports = mongoose.model("Users", userSchema);

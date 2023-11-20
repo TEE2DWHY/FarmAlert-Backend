@@ -46,7 +46,7 @@ const getUser = asyncWrapper(async (req, res) => {
   });
 });
 
-// Delete User
+// Delete a Specific User
 const deleteUser = asyncWrapper(async (req, res) => {
   const { token } = req.query;
   if (!token) {
