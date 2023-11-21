@@ -7,6 +7,6 @@ const {
 
 appRouter.post("/register", register);
 appRouter.get("/all-cattle", allCattle);
-appRouter.get("/get-cattle", getCattle);
+appRouter.get("/get-cattle/:cattleId", getCattle);
 
 module.exports = appRouter;
