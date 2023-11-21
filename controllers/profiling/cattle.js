@@ -59,7 +59,7 @@ const allCattle = asyncWrapper(async (req, res) => {
 const getCattle = asyncWrapper(async (req, res) => {
   const { token } = req.query;
   if (!token) {
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
       message: "Please Provide Token.",
     });
   }
