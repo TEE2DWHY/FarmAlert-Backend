@@ -57,12 +57,14 @@ const allCattle = asyncWrapper(async (req, res) => {
 
 // Get A Specific Cattle
 const getCattle = asyncWrapper(async (req, res) => {
-  const { cattleId } = req.query.params;
-  if (!cattleId) {
+  const { token } = req.query;
+  if (!token) {
     return res.status(StatusCodes.OK).json({
-      message: "Please Provide Cattle Id.",
+      message: "Please Provide Token.",
     });
   }
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const { cattleId } = decodedToken;
   const cattle = await Cattle.find({ Id: cattleId });
   res.status(StatusCodes.OK).json({
     message: {
