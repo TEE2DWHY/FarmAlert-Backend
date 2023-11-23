@@ -42,14 +42,6 @@ const agentSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Specify Your LGA"],
   },
-  farm: {
-    type: String,
-    required: [true, "Please Provide Farm Name"],
-    // enum: {
-    //   values: ["abuja", "lagos", "kogi", "ogun"],
-    //   message: "{VALUE} is not supported",
-    // },
-  },
   cattleAmount: {
     type: String,
   },

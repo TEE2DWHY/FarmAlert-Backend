@@ -5,6 +5,7 @@ const cloudinary = require("../../utils/cloudinary");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 
+// Register Cattle
 const register = asyncWrapper(async (req, res) => {
   let result;
   try {
