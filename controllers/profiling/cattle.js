@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 // Register Cattle
 const register = asyncWrapper(async (req, res) => {
   let result;
+  const { id, email } = req.agent;
   try {
     if (!req.file) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -26,15 +27,17 @@ const register = asyncWrapper(async (req, res) => {
     result = await cloudinary.uploader.upload(path);
     const cattle = await Cattle.create({
       ...req.body,
+      createdBy: id,
       image: result.secure_url,
       vaccinationDate: parsedVaccineDate,
       dateOfTreatment: parsedDateOfTreatment,
     });
-    const token = jwt.sign({ cattleId: cattle.Id });
+    // const token = jwt.sign({ cattleId: cattle.Id });
     res.status(StatusCodes.CREATED).json({
       message: "New Cattle Profile Added.",
       cattle: cattle,
-      token: token,
+      // token: token,
+      agentMail: email,
     });
   } catch (err) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

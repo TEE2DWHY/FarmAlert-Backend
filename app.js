@@ -11,7 +11,7 @@ const rateLimiter = require("express-rate-limit");
 const upload = require("./utils/multer");
 const errorHandler = require("./middleware/errorHandler");
 const notFound = require("./middleware/notFound");
-// const authorization = require("./middleware/authorization");
+const authorization = require("./middleware/authorization");
 
 // Router(s)
 const authAgentRouter = require("./routes/agent/auth");
@@ -36,7 +36,7 @@ app.use(
 app.use("/auth", authAgentRouter);
 app.use("/auth", authUserRouter);
 app.use(userRouter, agentRouter, lgaRouter);
-app.use("/cattle", upload.single("image"), cattleRouter);
+app.use("/cattle", authorization, upload.single("image"), cattleRouter);
 app.use("/sales", salesRouter);
 app.use(express.static("./public"));
 app.use(errorHandler);
