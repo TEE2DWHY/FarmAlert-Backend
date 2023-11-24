@@ -9,15 +9,15 @@ const authorization = async (req, res, next) => {
     });
   }
   const token = authToken.split(" ")[1];
-  const agent = jwt.verify(token, process.env.JWT_SECRET);
-  if (!agent) {
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  if (!decodedToken) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: "Invalid Token",
     });
   }
-  const { agentId, name } = agent;
-  req.agent = {
-    id: agentId,
+  const { userId, name } = decodedToken;
+  req.currentUser = {
+    id: userId,
     name: name,
   };
   next();

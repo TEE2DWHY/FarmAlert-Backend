@@ -41,7 +41,6 @@ const register = asyncWrapper(async (req, res) => {
 // Verify Email
 const verifyEmail = asyncWrapper(async (req, res) => {
   const { token } = req.query;
-  console.log(req.query);
   if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "Please Provide Token.",
@@ -89,7 +88,7 @@ const login = asyncWrapper(async (req, res) => {
   }
   if (agent.isEmailVerified === false) {
     const verificationToken = jwt.sign(
-      { agentId: agent._id, email: agent.email },
+      { userId: agent._id, email: agent.email },
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_LIFETIME,
@@ -106,7 +105,7 @@ const login = asyncWrapper(async (req, res) => {
     });
   }
   const token = jwt.sign(
-    { agentId: agent._id, name: agent.fullName, email: agent.email },
+    { userId: agent._id, name: agent.fullName, email: agent.email },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_LIFETIME,
@@ -133,7 +132,7 @@ const forgotPassword = asyncWrapper(async (req, res) => {
     });
   }
   const resetPasswordToken = jwt.sign(
-    { agentId: agent._id, email: email },
+    { userId: agent._id, email: email },
     process.env.JWT_SECRET
   );
   await sendEmail({
@@ -167,8 +166,8 @@ const resetPassword = asyncWrapper(async (req, res) => {
     });
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const { agentId } = decodedToken;
-  const agent = await Agent.findOne({ email: agentId });
+  const { userId } = decodedToken;
+  const agent = await Agent.findOne({ email: userId });
   if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "User not Found.",

@@ -39,11 +39,18 @@ const cattleSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Vaccination Image"],
   },
-  registeredBy: {
-    type: mongoose.Types.ObjectId,
-    ref: "Agent",
-    required: [true, "Please Specify the Agent who Registered the Cattle. "],
-  },
+  registeredBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Agent",
+      required: [true, "Cannot Get Agent"],
+    },
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Cannot Get User. "],
+    },
+  ],
 });
 
 module.exports = mongoose.model("Cattle", cattleSchema);

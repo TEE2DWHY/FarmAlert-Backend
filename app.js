@@ -21,6 +21,7 @@ const salesRouter = require("./routes/sales/cattle");
 const userRouter = require("./routes/user/user");
 const agentRouter = require("./routes/agent/agent");
 const lgaRouter = require("./routes/lga");
+const { StatusCodes } = require("http-status-codes");
 
 // middleware
 app.use(express.json());
@@ -44,14 +45,16 @@ app.use(notFound);
 
 const PORT = 8000 || process.env.PORT;
 
-const start = async () => {
+const start = async (req, res) => {
   try {
     await connect(process.env.MONGO_URI);
-    app.listen(PORT, () => {
+    app.listen(PORT, (req, res) => {
       console.log(`Server is running on port ${PORT}`);
     });
   } catch (err) {
-    console.log(err);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: err.message,
+    });
   }
 };
 

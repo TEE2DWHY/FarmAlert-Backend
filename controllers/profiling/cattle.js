@@ -8,8 +8,8 @@ const moment = require("moment");
 // Register Cattle
 const register = asyncWrapper(async (req, res) => {
   let result;
-  const { id, name } = req.agent;
-  console.log(req.agent);
+  const { id, name } = req.currentUser;
+  console.log(req.currentUser);
   try {
     if (!req.file) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -38,7 +38,7 @@ const register = asyncWrapper(async (req, res) => {
       message: "New Cattle Profile Added.",
       cattle: cattle,
       // token: token,
-      agentName: name,
+      registrarName: name,
     });
   } catch (err) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
