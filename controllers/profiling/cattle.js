@@ -3,12 +3,13 @@ const asyncWrapper = require("../../middleware/asyncWrapper");
 const Cattle = require("../../models/Cattle");
 const cloudinary = require("../../utils/cloudinary");
 const moment = require("moment");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
 // Register Cattle
 const register = asyncWrapper(async (req, res) => {
   let result;
-  const { id, email } = req.agent;
+  const { id, name } = req.agent;
+  console.log(req.agent);
   try {
     if (!req.file) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -27,7 +28,7 @@ const register = asyncWrapper(async (req, res) => {
     result = await cloudinary.uploader.upload(path);
     const cattle = await Cattle.create({
       ...req.body,
-      createdBy: id,
+      registeredBy: id,
       image: result.secure_url,
       vaccinationDate: parsedVaccineDate,
       dateOfTreatment: parsedDateOfTreatment,
@@ -37,7 +38,7 @@ const register = asyncWrapper(async (req, res) => {
       message: "New Cattle Profile Added.",
       cattle: cattle,
       // token: token,
-      agentMail: email,
+      agentName: name,
     });
   } catch (err) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

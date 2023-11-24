@@ -39,7 +39,7 @@ const cattleSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Vaccination Image"],
   },
-  createdBy: {
+  registeredBy: {
     type: mongoose.Types.ObjectId,
     ref: "Agent",
     required: [true, "Please Specify the Agent who Registered the Cattle. "],

@@ -15,10 +15,10 @@ const authorization = async (req, res, next) => {
       message: "Invalid Token",
     });
   }
-  const { agentId, email } = agent;
+  const { agentId, name } = agent;
   req.agent = {
     id: agentId,
-    email: email,
+    name: name,
   };
   next();
 };
