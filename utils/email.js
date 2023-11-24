@@ -66,7 +66,7 @@ const verifyEmailMessage = (verificationToken, currentUser, name) => {
   `;
 };
 
-const resetPasswordMessage = (resetPasswordToken) => {
+const resetPasswordMessage = (resetPasswordToken, currentUser) => {
   return `
   <!DOCTYPE html>
     <html>
@@ -88,7 +88,7 @@ const resetPasswordMessage = (resetPasswordToken) => {
         <div class="container">
           <h1>RESET PASSWORD. </h1>
           <p>Do not fret..We've got you covered.
-          <br/> Click this link to reset your password <a href=https://evov.pages.dev/pages/reset-password.html?token=${resetPasswordToken}>Reset Password</a>. Thank you
+          <br/> Click this link to reset your password <a href=${process.env.BASE_URL}/${currentUser}-resetpassword?token=${resetPasswordToken}>Reset Password</a>. Thank you
           </p>
         </div>
       </body>
