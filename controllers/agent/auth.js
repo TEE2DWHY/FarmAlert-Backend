@@ -138,7 +138,7 @@ const forgotPassword = asyncWrapper(async (req, res) => {
   await sendEmail({
     email: agent.email,
     subject: "CIMA- RESET PASSWORD",
-    message: resetPasswordMessage(resetPasswordToken),
+    message: resetPasswordMessage(resetPasswordToken, "agent"),
   });
   res.status(StatusCodes.OK).json({
     message: "Reset password email sent",
