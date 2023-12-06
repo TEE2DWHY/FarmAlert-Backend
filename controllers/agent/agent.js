@@ -72,7 +72,10 @@ const updateAgent = asyncWrapper(async (req, res) => {
   }
   return res.status(StatusCodes.OK).json({
     message: `Agent with Id: ${agent.Id} updated successfully.`,
-    updatedAgent: agent,
+    updatedAgent: {
+      fullName: agent.fullName,
+      email: agent.email,
+    },
   });
 });
 
