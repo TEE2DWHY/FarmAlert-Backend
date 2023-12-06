@@ -3,7 +3,6 @@ const asyncWrapper = require("../../middleware/asyncWrapper");
 const Cattle = require("../../models/Cattle");
 const cloudinary = require("../../utils/cloudinary");
 const moment = require("moment");
-// const jwt = require("jsonwebtoken");
 
 // Register Cattle
 const register = asyncWrapper(async (req, res) => {
@@ -33,7 +32,6 @@ const register = asyncWrapper(async (req, res) => {
       vaccinationDate: parsedVaccineDate,
       dateOfTreatment: parsedDateOfTreatment,
     });
-    // const token = jwt.sign({ cattleId: cattle.Id });
     res.status(StatusCodes.CREATED).json({
       message: "New Cattle Profile Added.",
       cattle: cattle,
@@ -81,4 +79,28 @@ const getCattle = asyncWrapper(async (req, res) => {
   });
 });
 
-module.exports = { register, allCattle, getCattle };
+// Update Cattle
+const updateCattle = asyncWrapper(async (req, res) => {
+  const { cattleId } = req.params;
+  if (!cattleId) {
+    return res.status(StatusCodes.OK).json({
+      message: "Please Provide Cattle Id.",
+    });
+  }
+  const cattle = await Cattle.findOneAndUpdate(
+    { Id: cattleId },
+    { $set: { ...req.body } },
+    { new: true }
+  );
+  if (!cattle) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Cattle Not Found.",
+    });
+  }
+  res.status(StatusCodes.OK).json({
+    message: `Cattle with Id: ${cattle.Id} is update successfully.`,
+    updateCattle: cattle,
+  });
+});
+
+module.exports = { register, allCattle, getCattle, updateCattle };

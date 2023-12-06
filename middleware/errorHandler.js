@@ -13,11 +13,11 @@ const errorHandler = async (err, req, res, next) => {
   }
   if (err.name === "CastError") {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: `${err.value} is not found in database.`,
+      message: `${Object.keys(err.value)} is not found in database.`,
     });
   }
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    message: err.message,
+    message: err,
   });
   next();
 };
