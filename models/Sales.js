@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { customAlphabet } = require("nanoid");
 const nanoid = customAlphabet("0123456789abcde", 5);
+
 const salesSchema = new mongoose.Schema({
   Id: {
     type: String,
@@ -71,6 +72,18 @@ const salesSchema = new mongoose.Schema({
       type: String,
     },
   },
+  createdBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Agent",
+      required: [true, "Please Specify Agent."],
+    },
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Please Specify User."],
+    },
+  ],
 });
 
 module.exports = mongoose.model("Sales", salesSchema);
