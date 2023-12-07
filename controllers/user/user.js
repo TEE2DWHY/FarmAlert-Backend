@@ -46,6 +46,34 @@ const getUser = asyncWrapper(async (req, res) => {
   });
 });
 
+// Update a User
+const updateUser = asyncWrapper(async (req, res) => {
+  const { userId } = req.params;
+  const data = { ...req.body };
+  if (!userId) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Please Provide UserId.",
+    });
+  }
+  if (Object.keys(data).length === 0) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Please Provide Data.",
+    });
+  }
+  const updatedUser = await User.findOneAndUpdate(
+    { Id: userId },
+    { $set: data },
+    { new: true }
+  );
+  res.status(StatusCodes.OK).json({
+    message: `User with Id: ${userId} is Successfully Updated.`,
+    user: {
+      fullName: updatedUser.fullName,
+      email: updatedUser.email,
+    },
+  });
+});
+
 // Delete a Specific User
 const deleteUser = asyncWrapper(async (req, res) => {
   const { token } = req.query;
@@ -67,4 +95,4 @@ const deleteUser = asyncWrapper(async (req, res) => {
   });
 });
 
-module.exports = { allUsers, getUser, deleteUser };
+module.exports = { allUsers, getUser, updateUser, deleteUser };

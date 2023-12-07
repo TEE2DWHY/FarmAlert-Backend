@@ -71,8 +71,6 @@ const salesSchema = new mongoose.Schema({
       type: String,
     },
   },
-  // Documentation:
-  // Upload pictures of Truck and Cattle
 });
 
 module.exports = mongoose.model("Sales", salesSchema);

@@ -7,6 +7,7 @@ const {
 
 appRouter.get("/user", getUser);
 appRouter.get("/all-user", allUsers);
+appRouter.put("/update/:userId");
 appRouter.delete("/user", deleteUser);
 
 module.exports = appRouter;
