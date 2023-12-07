@@ -1,6 +1,17 @@
 const { StatusCodes } = require("http-status-codes");
+const { TokenExpiredError, JsonWebTokenError } = require("jsonwebtoken");
 
 const errorHandler = async (err, req, res, next) => {
+  if (err instanceof TokenExpiredError) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: "Token has expired.",
+    });
+  }
+  if (err instanceof JsonWebTokenError) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: "Invalid token. Please provide a valid token.",
+    });
+  }
   if (err.name === "ValidationError") {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: err.message,
@@ -17,9 +28,8 @@ const errorHandler = async (err, req, res, next) => {
     });
   }
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    message: err,
+    message: err.message,
   });
-  next();
 };
 
 module.exports = errorHandler;

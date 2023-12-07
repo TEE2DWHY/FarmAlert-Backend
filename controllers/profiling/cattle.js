@@ -8,7 +8,6 @@ const moment = require("moment");
 const register = asyncWrapper(async (req, res) => {
   let result;
   const { id, name } = req.currentUser;
-  console.log(req.currentUser);
   try {
     if (!req.file) {
       return res.status(StatusCodes.BAD_REQUEST).json({

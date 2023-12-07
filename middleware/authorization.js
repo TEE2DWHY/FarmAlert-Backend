@@ -1,7 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
+const asyncWrapper = require("./asyncWrapper");
 
-const authorization = async (req, res, next) => {
+const authorization = asyncWrapper(async (req, res, next) => {
   const authToken = req.headers.authorization;
   if (!authToken || !authToken.startsWith("Bearer")) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -21,6 +22,6 @@ const authorization = async (req, res, next) => {
     name: name,
   };
   next();
-};
+});
 
 module.exports = authorization;
