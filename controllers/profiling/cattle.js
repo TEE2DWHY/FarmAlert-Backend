@@ -35,7 +35,6 @@ const registerCattle = asyncWrapper(async (req, res) => {
     res.status(StatusCodes.CREATED).json({
       message: "New Cattle Profile Added.",
       cattle: cattle,
-      // token: token,
       registrarName: name,
     });
   } catch (err) {
@@ -97,11 +96,36 @@ const updateCattle = asyncWrapper(async (req, res) => {
       message: "Please Provide Data.",
     });
   }
+  if (data.vaccinationDate) {
+    data.vaccinationDate = moment(data.vaccinationDate, "DD-MM-YYYY").isValid()
+      ? moment(data.vaccinationDate, "DD-MM-YYYY").toDate()
+      : undefined;
+  }
+  if (data.dateOfTreatment) {
+    data.dateOfTreatment = moment(data.dateOfTreatment, "DD-MM-YYYY").isValid()
+      ? moment(data.dateOfTreatment, "DD-MM-YYYY").toDate()
+      : undefined;
+  }
   const updatedCattle = await Cattle.findOneAndUpdate(
     { Id: cattleId },
-    { $set: data },
+    {
+      $push: {
+        vaccinationDate: data.vaccinationDate,
+        dateOfTreatment: data.dateOfTreatment,
+      },
+      $set: {
+        ...data,
+        vaccinationDate: undefined,
+        dateOfTreatment: undefined,
+      },
+    },
     { new: true }
   );
+  if (!updatedCattle) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Cattle with Id: ${cattleId} Not Found.`,
+    });
+  }
   res.status(StatusCodes.OK).json({
     message: updatedCattle,
   });
