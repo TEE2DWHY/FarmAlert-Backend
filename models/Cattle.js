@@ -12,7 +12,7 @@ const cattleSchema = new mongoose.Schema({
     required: [true, "Please Provide Farm Number"],
   },
   vaccinationDate: {
-    type: String,
+    type: [String],
     required: [true, "Please Specify Date of Vaccination"],
   },
   vaccineType: {
@@ -28,7 +28,7 @@ const cattleSchema = new mongoose.Schema({
     required: [true, "Please Specify Name of Veterinarian"],
   },
   dateOfTreatment: {
-    type: String,
+    type: [String],
     required: [true, "Please Specify Date of Treatment"],
   },
   treatmentType: {

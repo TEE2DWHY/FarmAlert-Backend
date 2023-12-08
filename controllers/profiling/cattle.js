@@ -31,6 +31,7 @@ const registerCattle = asyncWrapper(async (req, res) => {
       vaccinationDate: parsedVaccineDate,
       dateOfTreatment: parsedDateOfTreatment,
     });
+
     res.status(StatusCodes.CREATED).json({
       message: "New Cattle Profile Added.",
       cattle: cattle,
@@ -78,28 +79,38 @@ const getCattle = asyncWrapper(async (req, res) => {
   });
 });
 
-// Update Cattle
-const updateCattle = asyncWrapper(async (req, res) => {
-  const { cattleId } = req.params;
-  if (!cattleId) {
-    return res.status(StatusCodes.OK).json({
-      message: "Please Provide Cattle Id.",
-    });
-  }
-  const cattle = await Cattle.findOneAndUpdate(
-    { Id: cattleId },
-    { $set: { ...req.body } },
-    { new: true }
-  );
-  if (!cattle) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Cattle Not Found.",
-    });
-  }
-  res.status(StatusCodes.OK).json({
-    message: `Cattle with Id: ${cattle.Id} is update successfully.`,
-    updateCattle: cattle,
+// Get Cattle Created By a Specific User
+const allUserCattle = asyncWrapper(async (req, res) => {
+  const { id } = req.currentUser;
+  const allCattle = await Cattle.find({ registeredBy: id });
+  return res.status(StatusCodes.OK).json({
+    message: allCattle,
   });
 });
 
-module.exports = { registerCattle, allCattle, getCattle, updateCattle };
+// Update Cattle
+const updateCattle = asyncWrapper(async (req, res) => {
+  const { cattleId } = req.params;
+  const data = { ...req.body };
+  if (Object.keys(data).length === 0) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Please Provide Data.",
+    });
+  }
+  const updatedCattle = await Cattle.findOneAndUpdate(
+    { Id: cattleId },
+    { $set: data },
+    { new: true }
+  );
+  res.status(StatusCodes.OK).json({
+    message: updatedCattle,
+  });
+});
+
+module.exports = {
+  registerCattle,
+  allCattle,
+  getCattle,
+  allUserCattle,
+  updateCattle,
+};
