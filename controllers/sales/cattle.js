@@ -3,12 +3,11 @@ const Sales = require("../../models/Sales");
 const { StatusCodes } = require("http-status-codes");
 
 // Register
-const register = asyncWrapper(async (req, res) => {
+const registerSales = asyncWrapper(async (req, res) => {
   const newRecord = await Sales.create({ ...req.body });
   res.status(StatusCodes.CREATED).json({
-    message: "New Sales Recorded Added.",
-    record: newRecord,
+    message: newRecord,
   });
 });
 
-module.exports = register;
+module.exports = registerSales;

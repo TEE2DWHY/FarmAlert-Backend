@@ -14,7 +14,7 @@ const errorHandler = async (err, req, res, next) => {
   }
   if (err.name === "CastError") {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      message: `${Object.keys(err.value)} is not found in the database.`,
+      message: `${Object.keys(err.value)} is not found in database.`,
     });
   }
   if (err instanceof TokenExpiredError) {
@@ -27,6 +27,9 @@ const errorHandler = async (err, req, res, next) => {
       message: "Invalid token. Please provide a valid token.",
     });
   }
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    message: err.message,
+  });
   next(err);
 };
 

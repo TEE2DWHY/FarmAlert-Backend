@@ -5,7 +5,7 @@ const {
   allCattle,
 } = require("../../controllers/profiling/cattle");
 
-appRouter.post("/register", register);
+appRouter.post("/register-cattle", register);
 appRouter.get("/all-cattle", allCattle);
 appRouter.get("/get-cattle/:cattleId", getCattle);
 

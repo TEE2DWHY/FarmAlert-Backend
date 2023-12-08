@@ -1,6 +1,6 @@
-const register = require("../../controllers/sales/cattle");
+const registerSales = require("../../controllers/sales/cattle");
 const appRouter = require("../../utils/appRouter");
 
-appRouter.post("/register", register);
+appRouter.post("/register-sales", registerSales);
 
 module.exports = appRouter;
