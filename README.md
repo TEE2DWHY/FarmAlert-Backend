@@ -46,4 +46,4 @@ For any queries or support, feel free to contact [maintainer](mailto:isaacolorun
 
 ## License
 
-This project is licensed under [CODE-WITH-TY License](codewithty.dev).
+This project is licensed under [CODE-WITH-TY License](https://codewithty.dev).
