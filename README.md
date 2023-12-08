@@ -1,6 +1,6 @@
-# Express API
+# Express API (FARM ALERT)
 
-This is a basic Express API built to showcase RESTful endpoints.
+This is a basic Express API built to showcase RESTful endpoints for FARM ALERT.
 
 ## Getting Started
 
