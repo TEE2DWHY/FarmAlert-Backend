@@ -16,7 +16,7 @@ To get started with this API, follow these steps:
 The API includes various endpoints for handling different functionalities:
 
 - Endpoint for managing user data.
-- Endpoint for storing and data manipulation.
+- Endpoint for storing data and data manipulation.
 - Endpoint for managing cattle and sales data.
 
 Refer to the code and documentation for detailed usage and available endpoints (Below @ Documentation).
