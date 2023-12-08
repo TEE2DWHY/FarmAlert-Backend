@@ -50,11 +50,15 @@ const registerCattle = asyncWrapper(async (req, res) => {
 // Get All Cattle
 const allCattle = asyncWrapper(async (req, res) => {
   const cattle = await Cattle.find();
-  res.status(StatusCodes.OK).json({
-    message: {
-      allCattle: cattle,
-    },
-  });
+  cattle.length === 0
+    ? res.status(StatusCodes.OK).json({
+        message: "No Cattle is Found in Database.",
+      })
+    : res.status(StatusCodes.OK).json({
+        message: {
+          allCattle: cattle,
+        },
+      });
 });
 
 // Get A Specific Cattle
@@ -82,9 +86,18 @@ const getCattle = asyncWrapper(async (req, res) => {
 const allUserCattle = asyncWrapper(async (req, res) => {
   const { id } = req.currentUser;
   const allCattle = await Cattle.find({ registeredBy: id });
-  return res.status(StatusCodes.OK).json({
-    message: allCattle,
-  });
+  if (!allCattle) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Invalid User Id.",
+    });
+  }
+  allCattle.length === 0
+    ? res.status(StatusCodes.OK).json({
+        message: "You haven't registered any cattle to database.",
+      })
+    : res.status(StatusCodes.OK).json({
+        message: allCattle,
+      });
 });
 
 // Update Cattle
@@ -131,10 +144,29 @@ const updateCattle = asyncWrapper(async (req, res) => {
   });
 });
 
+const deleteCattle = asyncWrapper(async (req, res) => {
+  const { cattleId } = req.params;
+  if (!cattleId) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Please Provide Cattle Id.`,
+    });
+  }
+  const cattle = await Cattle.findOneAndDelete({ Id: cattleId });
+  if (!cattle) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Cattle with Id: ${cattleId} is not Found.`,
+    });
+  }
+  res.status(StatusCodes.OK).json({
+    message: `Cattle with Id: ${cattleId} has been Deleted.`,
+  });
+});
+
 module.exports = {
   registerCattle,
   allCattle,
   getCattle,
   allUserCattle,
   updateCattle,
+  deleteCattle,
 };
