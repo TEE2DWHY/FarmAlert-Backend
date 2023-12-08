@@ -1,11 +1,11 @@
 const appRouter = require("../../utils/appRouter");
 const {
-  register,
+  registerCattle,
   getCattle,
   allCattle,
 } = require("../../controllers/profiling/cattle");
 
-appRouter.post("/register-cattle", register);
+appRouter.post("/register-cattle", registerCattle);
 appRouter.get("/all-cattle", allCattle);
 appRouter.get("/get-cattle/:cattleId", getCattle);
 

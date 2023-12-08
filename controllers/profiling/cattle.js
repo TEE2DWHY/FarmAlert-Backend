@@ -5,7 +5,7 @@ const cloudinary = require("../../utils/cloudinary");
 const moment = require("moment");
 
 // Register Cattle
-const register = asyncWrapper(async (req, res) => {
+const registerCattle = asyncWrapper(async (req, res) => {
   let result;
   const { id, name } = req.currentUser;
   try {
@@ -102,4 +102,4 @@ const updateCattle = asyncWrapper(async (req, res) => {
   });
 });
 
-module.exports = { register, allCattle, getCattle, updateCattle };
+module.exports = { registerCattle, allCattle, getCattle, updateCattle };
