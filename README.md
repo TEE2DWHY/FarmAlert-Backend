@@ -8,7 +8,7 @@ To get started with this API, follow these steps:
 
 1. **Installation:** Clone this repository to your local machine.
 2. **Dependencies:** Run `npm install` to install the required dependencies.
-3. **Environment Variables:** Create a `.env` file and set environment variables (if needed).
+3. **Environment Variables:** Create a `.env` file and set environment variables (needed : see the env.example file).
 4. **Start the Server:** Run `nodemon app` to start the server.
 
 ## Usage
