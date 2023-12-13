@@ -144,6 +144,7 @@ const updateCattle = asyncWrapper(async (req, res) => {
   });
 });
 
+//  Delete a Specific Cattle
 const deleteCattle = asyncWrapper(async (req, res) => {
   const { cattleId } = req.params;
   if (!cattleId) {

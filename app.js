@@ -1,3 +1,4 @@
+// *
 const express = require("express");
 const app = express();
 require("dotenv").config();
@@ -12,7 +13,6 @@ const upload = require("./utils/multer");
 const errorHandler = require("./middleware/errorHandler");
 const notFound = require("./middleware/notFound");
 const authorization = require("./middleware/authorization");
-
 // Router(s)
 const authAgentRouter = require("./routes/agent/auth");
 const authUserRouter = require("./routes/user/auth");
@@ -21,7 +21,6 @@ const salesRouter = require("./routes/sales/cattle");
 const userRouter = require("./routes/user/user");
 const agentRouter = require("./routes/agent/agent");
 const lgaRouter = require("./routes/lga");
-
 // middleware
 app.use(express.json());
 app.use(cors());
@@ -42,6 +41,7 @@ app.use(express.static("./public"));
 app.use(errorHandler);
 app.use(notFound);
 
+// Set Port
 const PORT = 8000 || process.env.PORT;
 
 const start = async () => {
@@ -54,5 +54,5 @@ const start = async () => {
     console.log(err);
   }
 };
-
+// Start app.js
 start();
