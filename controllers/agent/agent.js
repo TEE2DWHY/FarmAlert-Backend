@@ -70,7 +70,7 @@ const updateAgent = asyncWrapper(async (req, res) => {
       message: `Agent with Id: ${agentId} not found.`,
     });
   }
-  return res.status(StatusCodes.OK).json({
+  res.status(StatusCodes.OK).json({
     message: `Agent with Id: ${agent.Id} updated successfully.`,
     updatedAgent: {
       fullName: agent.fullName,
