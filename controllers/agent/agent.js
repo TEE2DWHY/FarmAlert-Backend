@@ -32,7 +32,7 @@ const getAgent = asyncWrapper(async (req, res) => {
       message: "Invalid Token.",
     });
   }
-  const { password, ...agentData } = agent;
+  const { password, ...agentData } = agent.toObject();
   res.status(StatusCodes.OK).json({
     message: {
       agent: agentData,
