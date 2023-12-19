@@ -1,15 +1,15 @@
+const appRouter = require("../../utils/appRouter");
 const {
   registerSales,
   getAllSales,
-  getSale,
+  // getSale,
   updateSale,
   deleteSale,
 } = require("../../controllers/sales/cattle");
-const appRouter = require("../../utils/appRouter");
 
 appRouter.post("/register-sales", registerSales);
 appRouter.get("/all-sales", getAllSales);
-appRouter.get("/:saleId", getSale);
+// appRouter.get("/:saleId", getSale);
 appRouter.put("/:saleId", updateSale);
 appRouter.delete("/:saleId", deleteSale);
 

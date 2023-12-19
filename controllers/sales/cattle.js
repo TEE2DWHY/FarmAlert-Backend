@@ -38,29 +38,29 @@ const getAllSales = asyncWrapper(async (req, res) => {
   });
 });
 
-// Get Specific Sale
-const getSale = asyncWrapper(async (req, res) => {
-  const { saleId } = req.params;
-  if (!saleId) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Provide SaleId.",
-    });
-  }
-  const sale = await Sales.find({ Id: saleId });
-  if (!sale) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Invalid Sale Id.",
-    });
-  }
-  if (sale.length === 0) {
-    return res.status(StatusCodes.OK).json({
-      message: "You have not added any Sale Transaction",
-    });
-  }
-  return res.status(StatusCodes.OK).json({
-    message: sale,
-  });
-});
+// // Get Specific Sale
+// const getSale = asyncWrapper(async (req, res) => {
+//   const { saleId } = req.params;
+//   if (!saleId) {
+//     return res.status(StatusCodes.BAD_REQUEST).json({
+//       message: "Please Provide SaleId.",
+//     });
+//   }
+//   const sale = await Sales.findOne({ Id: saleId });
+//   if (!sale) {
+//     return res.status(StatusCodes.BAD_REQUEST).json({
+//       message: "Invalid Sale Id.",
+//     });
+//   }
+//   if (sale.length === 0) {
+//     return res.status(StatusCodes.OK).json({
+//       message: "You have not added any Sale Transaction",
+//     });
+//   }
+//   res.status(StatusCodes.OK).json({
+//     message: sale,
+//   });
+// });
 
 // Update Sale Record
 const updateSale = asyncWrapper(async (req, res) => {
@@ -114,7 +114,7 @@ const deleteSale = asyncWrapper(async (req, res) => {
 module.exports = {
   registerSales,
   getAllSales,
-  getSale,
+  // getSale,
   updateSale,
   deleteSale,
 };
