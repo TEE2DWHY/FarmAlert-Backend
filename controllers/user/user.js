@@ -8,12 +8,10 @@ const allUsers = asyncWrapper(async (req, res) => {
   const users = await User.find();
   res.status(StatusCodes.OK).json({
     message: {
-      allUsers: users.map((user) => ({
-        name: user.fullName,
-        email: user.email,
-        isVerified: user.isEmailVerified,
-        Id: user.Id,
-      })),
+      allUsers: users.map((user) => {
+        const { password, ...userData } = user.toObject();
+        return userData;
+      }),
     },
   });
 });
@@ -34,14 +32,12 @@ const getUser = asyncWrapper(async (req, res) => {
       message: "Invalid Token.",
     });
   }
+  // const userData = user.toObject({ getters: true, versionKey: false });
+  // delete userData.password;
+  const { password, ...userData } = user.toObject();
   res.status(StatusCodes.OK).json({
     message: {
-      user: {
-        name: user.fullName,
-        email: user.email,
-        isVerified: user.isEmailVerified,
-        Id: user.Id,
-      },
+      user: userData,
     },
   });
 });
@@ -65,12 +61,10 @@ const updateUser = asyncWrapper(async (req, res) => {
     { $set: data },
     { new: true }
   );
+  const { password, ...updatedUserData } = updatedUser;
   res.status(StatusCodes.OK).json({
     message: `User with Id: ${userId} is Successfully Updated.`,
-    user: {
-      fullName: updatedUser.fullName,
-      email: updatedUser.email,
-    },
+    user: updatedUserData,
   });
 });
 

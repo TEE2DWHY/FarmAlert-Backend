@@ -8,12 +8,10 @@ const allAgents = asyncWrapper(async (req, res) => {
   const agents = await Agent.find();
   res.status(StatusCodes.OK).json({
     message: {
-      allAgents: agents.map((agent) => ({
-        name: agent.fullName,
-        email: agent.email,
-        isVerified: agent.isEmailVerified,
-        Id: agent.Id,
-      })),
+      allAgents: agents.map((agent) => {
+        const { password, ...agentData } = agent.toObject();
+        return agentData;
+      }),
     },
   });
 });
@@ -34,14 +32,10 @@ const getAgent = asyncWrapper(async (req, res) => {
       message: "Invalid Token.",
     });
   }
+  const { password, ...agentData } = agent;
   res.status(StatusCodes.OK).json({
     message: {
-      agent: {
-        name: agent.fullName,
-        email: agent.email,
-        isVerified: agent.isEmailVerified,
-        Id: agent.Id,
-      },
+      agent: agentData,
     },
   });
 });
@@ -70,12 +64,10 @@ const updateAgent = asyncWrapper(async (req, res) => {
       message: `Agent with Id: ${agentId} not found.`,
     });
   }
+  const { password, ...updatedAgentData } = agent.toObject();
   res.status(StatusCodes.OK).json({
     message: `Agent with Id: ${agent.Id} updated successfully.`,
-    updatedAgent: {
-      fullName: agent.fullName,
-      email: agent.email,
-    },
+    updatedAgent: updatedAgentData,
   });
 });
 
