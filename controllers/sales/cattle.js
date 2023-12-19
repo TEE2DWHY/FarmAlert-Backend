@@ -38,7 +38,7 @@ const getAllSales = asyncWrapper(async (req, res) => {
   });
 });
 
-// // Get Specific Sale
+// Get Specific Sale
 // const getSale = asyncWrapper(async (req, res) => {
 //   const { saleId } = req.params;
 //   if (!saleId) {
