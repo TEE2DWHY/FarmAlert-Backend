@@ -61,7 +61,7 @@ const updateUser = asyncWrapper(async (req, res) => {
     { $set: data },
     { new: true }
   );
-  const { password, ...updatedUserData } = updatedUser;
+  const { password, ...updatedUserData } = updatedUser.toObject();
   res.status(StatusCodes.OK).json({
     message: `User with Id: ${userId} is Successfully Updated.`,
     user: updatedUserData,

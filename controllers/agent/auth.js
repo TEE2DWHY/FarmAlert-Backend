@@ -166,8 +166,8 @@ const resetPassword = asyncWrapper(async (req, res) => {
     });
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const { userId } = decodedToken;
-  const agent = await Agent.findOne({ email: userId });
+  const { userId, email } = decodedToken;
+  const agent = await Agent.findOne({ email: email });
   if (!agent) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: "User not Found.",
