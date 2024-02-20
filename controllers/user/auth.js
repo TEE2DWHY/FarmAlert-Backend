@@ -32,11 +32,9 @@ const register = asyncWrapper(async (req, res) => {
     message: verifyEmailMessage(verificationToken, "user", user.fullName),
   });
   res.status(StatusCodes.CREATED).json({
+    name: user.fullName,
     message: `User is Created Successfully.`,
-    payload: {
-      name: user.fullName,
-      verificationToken: verificationToken,
-    },
+    verificationToken: verificationToken,
   });
 });
 
@@ -114,9 +112,7 @@ const login = asyncWrapper(async (req, res) => {
   );
   res.status(StatusCodes.OK).json({
     message: "Login is Successful",
-    payload: {
-      token: token,
-    },
+    token: token,
   });
 });
 
