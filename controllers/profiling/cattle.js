@@ -170,7 +170,7 @@ const verifyCattle = asyncWrapper(async (req, res) => {
       message: `Please provide Cattle Id.`,
     });
   }
-  const cattle = await Cattle.findOne({ Id: id });
+  const cattle = await Cattle.findOne({ Id: cattleId });
   if (!cattle) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: `Cattle with Id: ${cattleId} is not Found.`,

@@ -12,7 +12,7 @@ const {
 appRouter.post("/register-cattle", registerCattle);
 appRouter.get("/all-cattle", allCattle);
 appRouter.get("/get-cattle/:cattleId", getCattle);
-appRouter.get("/get-cattle/:cattleId", verifyCattle);
+appRouter.get("/verify-cattle/:cattleId", verifyCattle);
 appRouter.get("/user-cattle", allUserCattle);
 appRouter.post("/update/:cattleId", updateCattle);
 appRouter.delete("/delete-cattle/:cattleId", deleteCattle);
