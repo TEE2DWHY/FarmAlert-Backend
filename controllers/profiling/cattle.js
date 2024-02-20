@@ -163,6 +163,24 @@ const deleteCattle = asyncWrapper(async (req, res) => {
   });
 });
 
+const verifyCattle = asyncWrapper(async (req, res) => {
+  const { cattleId } = req.params;
+  if (!cattleId) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Please provide Cattle Id.`,
+    });
+  }
+  const cattle = await Cattle.findOne({ Id: id });
+  if (!cattle) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Cattle with Id: ${cattleId} is not Found.`,
+    });
+  }
+  res.status(StatusCodes.OK).json({
+    message: cattle,
+  });
+});
+
 module.exports = {
   registerCattle,
   allCattle,
@@ -170,4 +188,5 @@ module.exports = {
   allUserCattle,
   updateCattle,
   deleteCattle,
+  verifyCattle,
 };
