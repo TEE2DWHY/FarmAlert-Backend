@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const { customAlphabet } = require("nanoid");
-const nanoId = customAlphabet("1234567890abcde", 5);
+const nanoId = customAlphabet("1234567890abcde", 4);
 
 const cattleSchema = new mongoose.Schema({
   Id: {
     type: String,
-    default: nanoId(),
+    default: `NGN0000${nanoId()}`,
   },
   farmNumber: {
     type: String,

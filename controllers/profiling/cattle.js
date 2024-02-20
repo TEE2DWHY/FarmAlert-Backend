@@ -163,6 +163,7 @@ const deleteCattle = asyncWrapper(async (req, res) => {
   });
 });
 
+//  Verify a Cattle
 const verifyCattle = asyncWrapper(async (req, res) => {
   const { cattleId } = req.params;
   if (!cattleId) {
