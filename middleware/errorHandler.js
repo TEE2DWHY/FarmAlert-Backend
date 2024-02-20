@@ -2,35 +2,40 @@ const { StatusCodes } = require("http-status-codes");
 const { TokenExpiredError, JsonWebTokenError } = require("jsonwebtoken");
 
 const errorHandler = async (err, req, res, next) => {
+  let payload = null;
+  let hasError = true;
+  let message = "Internal Server Error";
+
   if (err.name === "ValidationError") {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: err.message,
-    });
+    message = err.message;
+  } else if (err.code === 11000) {
+    message = `${Object.keys(err.keyValue)} is taken already.`;
+  } else if (err.name === "CastError") {
+    message = `${Object.keys(err.value)} is not found in database.`;
+  } else if (err instanceof TokenExpiredError) {
+    message = "Token has expired.";
+  } else if (err instanceof JsonWebTokenError) {
+    message = "Invalid token. Please provide a valid token.";
   }
-  if (err.code === 11000) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: `${Object.keys(err.keyValue)} is taken already.`,
-    });
-  }
-  if (err.name === "CastError") {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: `${Object.keys(err.value)} is not found in database.`,
-    });
-  }
-  if (err instanceof TokenExpiredError) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Token has expired.",
-    });
-  }
-  if (err instanceof JsonWebTokenError) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Invalid token. Please provide a valid token.",
-    });
-  }
-  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    message: err.message,
+
+  res.status(getStatusCode(err)).json({
+    payload,
+    hasError,
+    message,
   });
-  next();
+};
+
+const getStatusCode = (err) => {
+  if (err.name === "ValidationError") {
+    return StatusCodes.UNAUTHORIZED;
+  }
+  if (err.code === 11000 || err.name === "CastError") {
+    return StatusCodes.BAD_REQUEST;
+  }
+  if (err instanceof TokenExpiredError || err instanceof JsonWebTokenError) {
+    return StatusCodes.UNAUTHORIZED;
+  }
+  return StatusCodes.INTERNAL_SERVER_ERROR;
 };
 
 module.exports = errorHandler;

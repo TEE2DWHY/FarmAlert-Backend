@@ -3,43 +3,59 @@ const asyncWrapper = require("../../middleware/asyncWrapper");
 const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
+// Function to create consistent response data
+const createResponseData = (payload, hasError, message) => {
+  return {
+    payload,
+    hasError,
+    message,
+  };
+};
+
 // Get all users
 const allUsers = asyncWrapper(async (req, res) => {
   const users = await User.find();
-  res.status(StatusCodes.OK).json({
-    message: {
-      allUsers: users.map((user) => {
-        const { password, ...userData } = user.toObject();
-        return userData;
-      }),
-    },
+  const sanitizedUsers = users.map((user) => {
+    const { password, ...userData } = user.toObject();
+    return userData;
   });
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        allUsers: sanitizedUsers,
+      },
+      false,
+      "Retrieved all users successfully."
+    )
+  );
 });
 
 // Get a Specific User
 const getUser = asyncWrapper(async (req, res) => {
   const { token } = req.query;
   if (!token) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Provide Token.",
-    });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Please Provide Token."));
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { userId } = decodedToken;
   const user = await User.findOne({ _id: userId });
   if (!user) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Invalid Token.",
-    });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Invalid Token."));
   }
-  // const userData = user.toObject({ getters: true, versionKey: false });
-  // delete userData.password;
   const { password, ...userData } = user.toObject();
-  res.status(StatusCodes.OK).json({
-    message: {
-      user: userData,
-    },
-  });
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        user: userData,
+      },
+      false,
+      "Retrieved user successfully."
+    )
+  );
 });
 
 // Update a User
@@ -47,46 +63,51 @@ const updateUser = asyncWrapper(async (req, res) => {
   const { userId } = req.params;
   const data = { ...req.body };
   if (!userId) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Provide UserId.",
-    });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Please Provide UserId."));
   }
   if (Object.keys(data).length === 0) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Provide Data.",
-    });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Please Provide Data."));
   }
   const updatedUser = await User.findOneAndUpdate(
-    { Id: userId },
+    { _id: userId },
     { $set: data },
     { new: true }
   );
   const { password, ...updatedUserData } = updatedUser.toObject();
-  res.status(StatusCodes.OK).json({
-    message: `User with Id: ${userId} is Successfully Updated.`,
-    user: updatedUserData,
-  });
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        user: updatedUserData,
+      },
+      false,
+      `User with Id: ${userId} is Successfully Updated.`
+    )
+  );
 });
 
 // Delete a Specific User
 const deleteUser = asyncWrapper(async (req, res) => {
   const { token } = req.query;
   if (!token) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please Provide Token.",
-    });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Please Provide Token."));
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const { userId, email } = decodedToken;
   const user = await User.findOneAndDelete({ _id: userId });
   if (!user) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Invalid Token.",
-    });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Invalid Token."));
   }
-  res.status(StatusCodes.OK).json({
-    message: `Account for ${email} is Deleted.`,
-  });
+  res
+    .status(StatusCodes.OK)
+    .json(createResponseData(null, false, `Account for ${email} is Deleted.`));
 });
 
 module.exports = { allUsers, getUser, updateUser, deleteUser };
