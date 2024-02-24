@@ -23,22 +23,20 @@ const registerCattle = asyncWrapper(async (req, res) => {
         .status(StatusCodes.BAD_REQUEST)
         .json(createResponseData(null, true, "Please Upload Image."));
     }
-    const { vaccinationDate, dateOfTreatment } = req.body;
+    // const { vaccinationDate, dateOfTreatment } = req.body;
     const { path } = req.file;
-    const parsedVaccineDate = moment(vaccinationDate, "DD-MM-YYYY");
-    const parsedDateOfTreatment = moment(dateOfTreatment, "DD-MM-YYYY");
-    if (!parsedVaccineDate.isValid() || !parsedDateOfTreatment.isValid()) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json(createResponseData(null, true, "Invalid Date Format."));
-    }
+    // const parsedVaccineDate = moment(vaccinationDate, "DD-MM-YYYY");
+    // const parsedDateOfTreatment = moment(dateOfTreatment, "DD-MM-YYYY");
+    // if (!parsedVaccineDate.isValid() || !parsedDateOfTreatment.isValid()) {
+    //   return res
+    //     .status(StatusCodes.BAD_REQUEST)
+    //     .json(createResponseData(null, true, "Invalid Date Format."));
+    // }
     result = await cloudinary.uploader.upload(path);
     const cattle = await Cattle.create({
       ...req.body,
       registeredBy: id,
       image: result.secure_url,
-      vaccinationDate: parsedVaccineDate,
-      dateOfTreatment: parsedDateOfTreatment,
     });
 
     res.status(StatusCodes.CREATED).json(
@@ -84,6 +82,11 @@ const allCattle = asyncWrapper(async (req, res) => {
 // Get A Specific Cattle
 const getCattle = asyncWrapper(async (req, res) => {
   const { cattleId } = req.params;
+  if (!cattleId.startsWith("NGN")) {
+    return res
+      .starts(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Invalid CattleId"));
+  }
   if (!cattleId) {
     return res
       .status(StatusCodes.OK)
@@ -225,6 +228,11 @@ const deleteCattle = asyncWrapper(async (req, res) => {
 // Verify a Cattle
 const verifyCattle = asyncWrapper(async (req, res) => {
   const { cattleId } = req.params;
+  if (!cattleId.startsWith("NGN")) {
+    return res
+      .starts(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Invalid CattleId"));
+  }
   if (!cattleId) {
     return res
       .status(StatusCodes.BAD_REQUEST)
@@ -245,7 +253,19 @@ const verifyCattle = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        cattle: cattle,
+        animalId: cattle.Id,
+        weight: cattle.weight,
+        breed: cattle.breed,
+        DOB: cattle.DOB,
+        age: cattle.age,
+        type: cattle.animalType,
+        group: cattle.group.map((groups) => {
+          return groups;
+        }),
+        gender: cattle.gender,
+        color: cattle.color,
+        health: cattle.health,
+        source: cattle.source,
       },
       false,
       "Cattle Found."

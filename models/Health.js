@@ -4,16 +4,13 @@ const salesSchema = new mongoose.Schema({
   Id: {
     type: String,
   },
-  health: {
+  vaccine: {
     type: String,
   },
-  ownerName: {
+  age: {
     type: String,
   },
-  price: {
-    type: String,
-  },
-  status: {
+  date: {
     type: String,
   },
   createdBy: [
@@ -30,4 +27,4 @@ const salesSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Sales", salesSchema);
+module.exports = mongoose.model("Health", salesSchema);
