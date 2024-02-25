@@ -38,7 +38,7 @@ app.use("/auth", authUserRouter);
 app.use("/register", authorization, farmRouter);
 app.use(userRouter, agentRouter, lgaRouter);
 app.use("/cattle", authorization, upload.single("image"), cattleRouter);
-// app.use("/sales", authorization, salesRouter);
+app.use("/sales", authorization, upload.single("image"), salesRouter);
 app.use(express.static("./public"));
 app.use(errorHandler);
 app.use(notFound);

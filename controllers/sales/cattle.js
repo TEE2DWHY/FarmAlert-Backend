@@ -1,6 +1,7 @@
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const Sales = require("../../models/Sales");
 const { StatusCodes } = require("http-status-codes");
+const cloudinary = require("../../utils/cloudinary");
 
 // Function to create consistent response data
 const createResponseData = (payload, hasError, message) => {
@@ -13,31 +14,42 @@ const createResponseData = (payload, hasError, message) => {
 
 // Register Sales
 const registerSales = asyncWrapper(async (req, res) => {
-  const data = { ...req.body };
-  if (Object.keys(data).length === 0) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Form Fields Cannot Be Empty."));
-  }
-  const { id, name } = req.currentUser;
-  const newRecord = await Sales.create({
-    ...req.body,
-    createdBy: {
-      _id: id,
-    },
-  });
-  res.status(StatusCodes.CREATED).json(
-    createResponseData(
-      {
-        newRecord: newRecord,
-        registrarName: {
-          fullName: name,
-        },
+  try {
+    const { id, name } = req.currentUser;
+    if (!req.file) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json(createResponseData(null, true, "Please Upload Image."));
+    }
+    const { path } = req.file;
+    result = await cloudinary.uploader.upload(path);
+    const newRecord = await Sales.create({
+      ...req.body,
+      image: result.secure_url,
+      createdBy: {
+        _id: id,
       },
-      false,
-      "Sales Record Created Successfully."
-    )
-  );
+    });
+    res.status(StatusCodes.CREATED).json(
+      createResponseData(
+        {
+          newRecord: newRecord,
+          registrarName: {
+            fullName: name,
+          },
+        },
+        false,
+        "Sales Record Created Successfully."
+      )
+    );
+  } catch (err) {
+    if (result) {
+      await cloudinary.uploader.destroy(result.public_id);
+    }
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(createResponseData(null, true, err.message));
+  }
 });
 
 // Get Sales

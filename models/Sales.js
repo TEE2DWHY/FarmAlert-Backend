@@ -1,20 +1,77 @@
 const mongoose = require("mongoose");
 
 const salesSchema = new mongoose.Schema({
-  Id: {
+  cattleId: {
     type: String,
+    required: [true, "Please Provide cattleId."],
   },
-  health: {
+  date: {
     type: String,
+    required: [true, "Please Specify Date."],
   },
-  ownerName: {
+  receiversName: {
     type: String,
+    required: [true, "Please Specify Receiver Name."],
   },
-  price: {
+  phoneNumber: {
     type: String,
+    required: [true, "Please Specify Receiver Name."],
   },
-  status: {
+  address: {
     type: String,
+    required: [true, "Please Specify Your Address."],
+  },
+  state: {
+    type: String,
+    required: [true, "Please Specify Your State"],
+  },
+  lga: {
+    type: String,
+    required: [true, "Please Specify Your LGA"],
+  },
+  market: {
+    type: String,
+    required: [true, "Please Specify Market"],
+  },
+  driversName: {
+    type: String,
+    required: [true, "Please Specify Drivers Details"],
+  },
+  driverNumber: {
+    type: String,
+    required: [true, "Please Provide Drivers Number."],
+  },
+  truckNumber: {
+    type: String,
+    required: [true, "Please Provide Truck Number."],
+  },
+  dateOfDeparture: {
+    type: String,
+    required: [true, "Please Provide Date of Departure."],
+  },
+  receiptNumber: {
+    type: String,
+    required: [true, "Please Provide Receipt Serial Number."],
+  },
+  payment: {
+    type: String,
+    required: [true, "Please Provide Payment."],
+  },
+  amountPaid: {
+    type: String,
+    required: [true, "Please Provide Amount Paid."],
+  },
+  outstanding: {
+    type: String,
+    required: [true, "Please Provide Outstanding."],
+  },
+  paymentMethod: {
+    type: String,
+    required: [true, "Please Provide Payment Method."],
+  },
+  image: {
+    type: String,
+    required: [true, "Please Provide Truck Image."],
   },
   createdBy: [
     {
