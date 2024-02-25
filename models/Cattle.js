@@ -61,7 +61,7 @@ const cattleSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Cattle Status."],
   },
-  cattleId: {
+  id: {
     type: String,
     default: `NGN0000${nanoId()}`,
   },
