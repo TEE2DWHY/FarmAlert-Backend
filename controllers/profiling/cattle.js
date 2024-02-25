@@ -71,7 +71,6 @@ const allCattle = asyncWrapper(async (req, res) => {
       createResponseData(
         {
           allCattle: cattle.map((items) => {
-            // const { _id, ...cattleData } = items.toJSON();
             return cattle;
           }),
         },
@@ -101,7 +100,6 @@ const getCattle = asyncWrapper(async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Invalid Cattle Id"));
   }
-  // const { _id, ...cattleData } = cattle.toJSON();
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
@@ -133,7 +131,6 @@ const allUserCattle = asyncWrapper(async (req, res) => {
         )
       );
   } else {
-    // const { _id, ...cattleData } = cattle.toJSON();
     res.status(StatusCodes.OK).json(
       createResponseData(
         {
@@ -258,7 +255,7 @@ const verifyCattle = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        animalId: cattle.Id,
+        animalId: cattle.cattleId,
         weight: cattle.weight,
         breed: cattle.breed,
         DOB: cattle.DOB,
