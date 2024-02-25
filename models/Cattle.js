@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const { customAlphabet } = require("nanoid");
-const nanoId = customAlphabet("1234567890abcde", 4);
+// const { customAlphabet } = require("nanoid");
+// const nanoId = customAlphabet("1234567890abcde", 4);
 
 const cattleSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  tagId: {
+  cattleId: {
     type: String,
     required: [true, "Please Provide Cattle Tag Id."],
   },
@@ -61,10 +61,10 @@ const cattleSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Cattle Status."],
   },
-  id: {
-    type: String,
-    default: `NGN0000${nanoId()}`,
-  },
+  // id: {
+  //   type: String,
+  //   default: `NGN0000${nanoId()}`,
+  // },
   health: {
     type: String,
     required: [true, "Please Provide Cattle Health Status."],
