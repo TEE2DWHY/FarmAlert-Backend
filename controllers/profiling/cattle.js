@@ -38,11 +38,11 @@ const registerCattle = asyncWrapper(async (req, res) => {
       registeredBy: id,
       image: result.secure_url,
     });
-
+    const { tagId, ...cattleData } = cattle.toJSON();
     res.status(StatusCodes.CREATED).json(
       createResponseData(
         {
-          cattle: cattle,
+          cattle: cattleData,
           registrarName: name,
         },
         false,
@@ -70,7 +70,10 @@ const allCattle = asyncWrapper(async (req, res) => {
     res.status(StatusCodes.OK).json(
       createResponseData(
         {
-          allCattle: cattle,
+          allCattle: cattle.map((items) => {
+            const { tagId, ...cattleData } = items.toJSON();
+            return cattleData;
+          }),
         },
         false,
         "All Cattle Found in Database."
@@ -98,10 +101,11 @@ const getCattle = asyncWrapper(async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Invalid Cattle Id"));
   }
+  const { tagId, ...cattleData } = cattle.toJSON();
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        cattle: cattle,
+        cattle: cattleData,
       },
       false,
       "Specific Cattle Found."
@@ -129,10 +133,11 @@ const allUserCattle = asyncWrapper(async (req, res) => {
         )
       );
   } else {
+    const { tagId, ...cattleData } = cattle.toJSON();
     res.status(StatusCodes.OK).json(
       createResponseData(
         {
-          allUserCattle: allCattle,
+          allUserCattle: cattleData,
         },
         false,
         "All Cattle Registered by User Found."
