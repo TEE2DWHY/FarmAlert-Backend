@@ -71,7 +71,7 @@ const allCattle = asyncWrapper(async (req, res) => {
       createResponseData(
         {
           allCattle: cattle.map((items) => {
-            return cattle;
+            return items;
           }),
         },
         false,
