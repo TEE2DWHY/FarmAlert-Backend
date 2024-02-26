@@ -10,10 +10,10 @@ const {
 } = require("../../utils/email");
 
 // Function to create consistent response data
-const createResponseData = (payload, hasError, message) => {
+const createResponseData = (payload, hasErrors, message) => {
   return {
     payload,
-    hasError,
+    hasErrors,
     message,
   };
 };

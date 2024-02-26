@@ -1,16 +1,22 @@
 const mongoose = require("mongoose");
 
-const salesSchema = new mongoose.Schema({
+const healthSchema = new mongoose.Schema({
   Id: {
     type: String,
   },
   vaccine: {
     type: String,
   },
+  date: {
+    type: String,
+  },
   age: {
     type: String,
   },
-  date: {
+  medication: {
+    type: String,
+  },
+  dosage: {
     type: String,
   },
   createdBy: [
@@ -27,4 +33,4 @@ const salesSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Health", salesSchema);
+module.exports = mongoose.model("Health", healthSchema);

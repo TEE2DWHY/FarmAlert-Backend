@@ -4,10 +4,10 @@ const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
 // Function to create consistent response data
-const createResponseData = (payload, hasError, message) => {
+const createResponseData = (payload, hasErrors, message) => {
   return {
     payload,
-    hasError,
+    hasErrors,
     message,
   };
 };

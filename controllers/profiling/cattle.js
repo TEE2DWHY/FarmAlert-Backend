@@ -5,10 +5,10 @@ const cloudinary = require("../../utils/cloudinary");
 const moment = require("moment");
 
 // Function to create consistent response data
-const createResponseData = (payload, hasError, message) => {
+const createResponseData = (payload, hasErrors, message) => {
   return {
     payload,
-    hasError,
+    hasErrors,
     message,
   };
 };

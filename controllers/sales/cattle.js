@@ -4,10 +4,10 @@ const { StatusCodes } = require("http-status-codes");
 const cloudinary = require("../../utils/cloudinary");
 
 // Function to create consistent response data
-const createResponseData = (payload, hasError, message) => {
+const createResponseData = (payload, hasErrors, message) => {
   return {
     payload,
-    hasError,
+    hasErrors,
     message,
   };
 };
