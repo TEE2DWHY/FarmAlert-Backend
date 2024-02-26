@@ -153,27 +153,27 @@ const updateCattle = asyncWrapper(async (req, res) => {
       .json(createResponseData(null, true, "Please Provide Data."));
   }
   // Update date fields if present
-  if (data.vaccinationDate) {
-    data.vaccinationDate = moment(data.vaccinationDate, "DD-MM-YYYY").isValid()
-      ? moment(data.vaccinationDate, "DD-MM-YYYY").toDate()
-      : undefined;
-  }
-  if (data.dateOfTreatment) {
-    data.dateOfTreatment = moment(data.dateOfTreatment, "DD-MM-YYYY").isValid()
-      ? moment(data.dateOfTreatment, "DD-MM-YYYY").toDate()
-      : undefined;
-  }
+  // if (data.vaccinationDate) {
+  //   data.vaccinationDate = moment(data.vaccinationDate, "DD-MM-YYYY").isValid()
+  //     ? moment(data.vaccinationDate, "DD-MM-YYYY").toDate()
+  //     : undefined;
+  // }
+  // if (data.dateOfTreatment) {
+  //   data.dateOfTreatment = moment(data.dateOfTreatment, "DD-MM-YYYY").isValid()
+  //     ? moment(data.dateOfTreatment, "DD-MM-YYYY").toDate()
+  //     : undefined;
+  // }
   const updatedCattle = await Cattle.findOneAndUpdate(
     { Id: cattleId },
     {
-      $push: {
-        vaccinationDate: data.vaccinationDate,
-        dateOfTreatment: data.dateOfTreatment,
-      },
+      // $push: {
+      //   vaccinationDate: data.vaccinationDate,
+      //   dateOfTreatment: data.dateOfTreatment,
+      // },
       $set: {
         ...data,
-        vaccinationDate: undefined,
-        dateOfTreatment: undefined,
+        // vaccinationDate: undefined,
+        // dateOfTreatment: undefined,
       },
     },
     { new: true }
