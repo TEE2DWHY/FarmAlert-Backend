@@ -248,19 +248,7 @@ const verifyCattle = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        cattleIdId: cattle.cattleId,
-        weight: cattle.weight,
-        breed: cattle.breed,
-        DOB: cattle.DOB,
-        age: cattle.age,
-        type: cattle.animalType,
-        group: cattle.group.map((groups) => {
-          return groups;
-        }),
-        gender: cattle.gender,
-        color: cattle.color,
-        health: cattle.health,
-        source: cattle.source,
+        cattle,
       },
       false,
       "Cattle Found."
