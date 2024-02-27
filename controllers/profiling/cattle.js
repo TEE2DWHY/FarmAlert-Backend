@@ -248,7 +248,7 @@ const verifyCattle = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        animalId: cattle.cattleId,
+        cattleIdId: cattle.cattleId,
         weight: cattle.weight,
         breed: cattle.breed,
         DOB: cattle.DOB,
