@@ -147,53 +147,46 @@ const allUserCattle = asyncWrapper(async (req, res) => {
 const updateCattle = asyncWrapper(async (req, res) => {
   const { cattleId } = req.params;
   const data = { ...req.body };
-  if (Object.keys(data).length === 0) {
+
+  // Filter out null values from the data
+  const filteredData = {};
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== null) {
+      filteredData[key] = data[key];
+    }
+  });
+
+  if (Object.keys(filteredData).length === 0) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Please Provide Data."));
+      .json(
+        createResponseData(null, true, "No valid data provided for update.")
+      );
   }
-  // Update date fields if present
-  // if (data.vaccinationDate) {
-  //   data.vaccinationDate = moment(data.vaccinationDate, "DD-MM-YYYY").isValid()
-  //     ? moment(data.vaccinationDate, "DD-MM-YYYY").toDate()
-  //     : undefined;
-  // }
-  // if (data.dateOfTreatment) {
-  //   data.dateOfTreatment = moment(data.dateOfTreatment, "DD-MM-YYYY").isValid()
-  //     ? moment(data.dateOfTreatment, "DD-MM-YYYY").toDate()
-  //     : undefined;
-  // }
+
   const updatedCattle = await Cattle.findOneAndUpdate(
     { cattleId: cattleId },
-    {
-      // $push: {
-      //   vaccinationDate: data.vaccinationDate,
-      //   dateOfTreatment: data.dateOfTreatment,
-      // },
-      $set: {
-        ...data,
-        // vaccinationDate: undefined,
-        // dateOfTreatment: undefined,
-      },
-    },
+    { $set: filteredData },
     { new: true }
   );
+
   if (!updatedCattle) {
     return res
-      .status(StatusCodes.BAD_REQUEST)
+      .status(StatusCodes.NOT_FOUND)
       .json(
         createResponseData(null, true, `Cattle with Id: ${cattleId} Not Found.`)
       );
   }
-  res.status(StatusCodes.OK).json(
-    createResponseData(
-      {
-        updatedCattle: updatedCattle,
-      },
-      false,
-      "Cattle Updated Successfully."
-    )
-  );
+
+  res
+    .status(StatusCodes.OK)
+    .json(
+      createResponseData(
+        { updatedCattle: updatedCattle },
+        false,
+        "Cattle Updated Successfully."
+      )
+    );
 });
 
 // Delete a Specific Cattle
