@@ -233,7 +233,7 @@ const verifyCattle = asyncWrapper(async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Please provide Cattle Id."));
   }
-  const cattle = await Cattle.findOne({ Id: cattleId });
+  const cattle = await Cattle.findOne({ cattleId: cattleId });
   if (!cattle) {
     return res
       .status(StatusCodes.BAD_REQUEST)
