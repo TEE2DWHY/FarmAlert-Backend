@@ -164,7 +164,7 @@ const updateCattle = asyncWrapper(async (req, res) => {
   //     : undefined;
   // }
   const updatedCattle = await Cattle.findOneAndUpdate(
-    { Id: cattleId },
+    { _id: cattleId },
     {
       // $push: {
       //   vaccinationDate: data.vaccinationDate,
