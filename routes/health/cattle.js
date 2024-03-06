@@ -11,6 +11,7 @@ const {
   getPregnantAnimals,
   getVetVisit,
   getDeath,
+  getBirth,
 } = require("../../controllers/health/health");
 
 appRouter.post("/vaccination", createVaccination);
@@ -22,6 +23,7 @@ appRouter.get("/pregnancy", getPregnantAnimals);
 appRouter.post("/vet-visit", createVetVisit);
 appRouter.get("/vet-visit", getVetVisit);
 appRouter.post("/birth", createBirth);
+appRouter.get("/birth", getBirth);
 appRouter.post("/death", createDeath);
 appRouter.get("/death", getDeath);
 
