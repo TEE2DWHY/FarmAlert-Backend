@@ -150,7 +150,7 @@ const createVetVisit = asyncWrapper(async (req, res) => {
   );
 });
 
-const getVetVisits = asyncWrapper(async (req, res) => {
+const getVetVisit = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const vetVisit = await Health.VetVisit.find();
   res.status(StatusCodes.CREATED).json(
@@ -253,7 +253,7 @@ module.exports = {
   createPregnancy,
   getPregnantAnimals,
   createVetVisit,
-  getVetVisits,
+  getVetVisit,
   createBirth,
   getBirth,
   createDeath,
