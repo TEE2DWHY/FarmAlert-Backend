@@ -45,7 +45,7 @@ const getVaccinatedAnimals = asyncWrapper(async (req, res) => {
         },
       },
       false,
-      "Vaccination Data is returned Successfully."
+      "Vaccination Data is Returned Successfully."
     )
   );
 });
@@ -84,7 +84,7 @@ const getMedicatedAnimals = asyncWrapper(async (req, res) => {
         },
       },
       false,
-      "Medication Data is Created Successfully."
+      "Medication Data is Returned Successfully."
     )
   );
 });
@@ -123,7 +123,7 @@ const getPregnantAnimals = asyncWrapper(async (req, res) => {
         },
       },
       false,
-      "Medication Data is Created Successfully."
+      "Medication Data is Returned Successfully."
     )
   );
 });
@@ -162,7 +162,7 @@ const getVetVisits = asyncWrapper(async (req, res) => {
         },
       },
       false,
-      "VetVisits Data is Created Successfully."
+      "VetVisits Data is Returned Successfully."
     )
   );
 });
@@ -185,6 +185,23 @@ const createBirth = asyncWrapper(async (req, res) => {
       },
       false,
       "Birth Data is Created Successfully."
+    )
+  );
+});
+
+const getBirth = asyncWrapper(async (req, res) => {
+  const { id, name } = req.currentUser;
+  const birth = await Health.Birth.find();
+  res.status(StatusCodes.CREATED).json(
+    createResponseData(
+      {
+        birth,
+        registrarName: {
+          fullName: name,
+        },
+      },
+      false,
+      "Death Data is Returned Successfully."
     )
   );
 });
@@ -223,7 +240,7 @@ const getDeath = asyncWrapper(async (req, res) => {
         },
       },
       false,
-      "Death Data is gotten Successfully."
+      "Death Data is Returned Successfully."
     )
   );
 });
@@ -238,6 +255,7 @@ module.exports = {
   createVetVisit,
   getVetVisits,
   createBirth,
+  getBirth,
   createDeath,
   getDeath,
 };
