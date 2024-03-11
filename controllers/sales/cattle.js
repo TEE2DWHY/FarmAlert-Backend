@@ -85,6 +85,39 @@ const getAllSales = asyncWrapper(async (req, res) => {
     );
 });
 
+// Get Sales
+const getSale = asyncWrapper(async (req, res) => {
+  const { cattleId } = req.query;
+  if (!cattleId) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Please Provide CattleId."));
+  }
+  const sale = await Sales.find({ cattleId: cattleId });
+  if (!sale) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Sale Does Not Exist."));
+  }
+  const cattle = await Cattle.find({ cattleId: sale.cattleId });
+
+  const salesWithCattle = {
+    sale,
+    weight: cattle.weight,
+    gender: cattle.gender,
+    health: cattle.health,
+  };
+  res
+    .status(StatusCodes.OK)
+    .json(
+      createResponseData(
+        { sale: salesWithCattle },
+        false,
+        "All Sales Records Found."
+      )
+    );
+});
+
 // Update Sale Record
 const updateSale = asyncWrapper(async (req, res) => {
   const { saleId } = req.params;
@@ -149,6 +182,7 @@ const deleteSale = asyncWrapper(async (req, res) => {
 
 module.exports = {
   registerSales,
+  getSale,
   getAllSales,
   updateSale,
   deleteSale,
