@@ -87,19 +87,20 @@ const getAllSales = asyncWrapper(async (req, res) => {
 
 // Get Sales
 const getSale = asyncWrapper(async (req, res) => {
-  const { cattleId } = req.query;
+  const { cattleId } = req.params;
   if (!cattleId) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Please Provide CattleId."));
   }
-  const sale = await Sales.find({ cattleId: cattleId });
+  const sale = await Sales.findOne({ cattleId: cattleId });
   if (!sale) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Sale Does Not Exist."));
   }
-  const cattle = await Cattle.find({ cattleId: sale.cattleId });
+  const cattle = await Cattle.findOne({ cattleId: sale.cattleId });
+  console.log(cattle);
 
   const salesWithCattle = {
     sale,
@@ -109,13 +110,7 @@ const getSale = asyncWrapper(async (req, res) => {
   };
   res
     .status(StatusCodes.OK)
-    .json(
-      createResponseData(
-        { sale: salesWithCattle },
-        false,
-        "All Sales Records Found."
-      )
-    );
+    .json(createResponseData(salesWithCattle, false, "Sale Record Found."));
 });
 
 // Update Sale Record
