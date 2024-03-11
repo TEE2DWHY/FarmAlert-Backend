@@ -73,6 +73,10 @@ const salesSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Truck Image."],
   },
+  status: {
+    type: String,
+    required: [true, "Please Provide Cattle Status."],
+  },
   createdBy: [
     {
       type: mongoose.Schema.Types.ObjectId,
