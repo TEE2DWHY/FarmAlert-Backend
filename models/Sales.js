@@ -4,6 +4,7 @@ const salesSchema = new mongoose.Schema({
   cattleId: {
     type: String,
     required: [true, "Please Provide cattleId."],
+    unique: [true, "CattleId Already Exist."],
   },
   date: {
     type: String,
@@ -53,7 +54,7 @@ const salesSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Receipt Serial Number."],
   },
-  payment: {
+  price: {
     type: String,
     required: [true, "Please Provide Payment."],
   },
