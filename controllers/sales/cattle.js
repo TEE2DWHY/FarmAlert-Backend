@@ -2,7 +2,7 @@ const asyncWrapper = require("../../middleware/asyncWrapper");
 const Sales = require("../../models/Sales");
 const { StatusCodes } = require("http-status-codes");
 const cloudinary = require("../../utils/cloudinary");
-
+const Cattle = require("../../models/Cattle");
 // Function to create consistent response data
 const createResponseData = (payload, hasErrors, message) => {
   return {
@@ -62,15 +62,25 @@ const getAllSales = asyncWrapper(async (req, res) => {
         createResponseData(null, false, "No Sales Record has been Uploaded.")
       );
   }
-  return res.status(StatusCodes.OK).json(
-    createResponseData(
-      {
-        allSales: sales,
-      },
-      false,
-      "All Sales Records Found."
-    )
-  );
+  const cattleIds = sales.map((sale) => sale.cattleId);
+  const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
+
+  const salesWithCattle = sales.map((sale) => {
+    const matchingCattle = cattle.find((c) => c.cattleId === sale.cattleId);
+    return {
+      ...sale._doc,
+      weight: matchingCattle ? matchingCattle.weight : null,
+    };
+  });
+  res
+    .status(StatusCodes.OK)
+    .json(
+      createResponseData(
+        { allSales: salesWithCattle },
+        false,
+        "All Sales Records Found."
+      )
+    );
 });
 
 // Update Sale Record

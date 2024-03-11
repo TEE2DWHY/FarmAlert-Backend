@@ -4,7 +4,6 @@ const salesSchema = new mongoose.Schema({
   cattleId: {
     type: String,
     required: [true, "Please Provide cattleId."],
-    unique: [true, "CattleId Already Exist."],
   },
   date: {
     type: String,
