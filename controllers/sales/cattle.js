@@ -85,7 +85,7 @@ const getAllSales = asyncWrapper(async (req, res) => {
     );
 });
 
-// Get Sales
+// Get Sale
 const getSale = asyncWrapper(async (req, res) => {
   const { cattleId } = req.params;
   if (!cattleId) {
