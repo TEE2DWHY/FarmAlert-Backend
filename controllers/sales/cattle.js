@@ -100,7 +100,6 @@ const getSale = asyncWrapper(async (req, res) => {
       .json(createResponseData(null, true, "Sale Does Not Exist."));
   }
   const cattle = await Cattle.findOne({ cattleId: sale.cattleId });
-  console.log(cattle);
 
   const salesWithCattle = {
     sale,
