@@ -69,7 +69,7 @@ const cattleSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Cattle Health Status."],
   },
-  image: {
+  cattleImage: {
     type: String,
     required: [true, "Please Provide Vaccination Image"],
   },
