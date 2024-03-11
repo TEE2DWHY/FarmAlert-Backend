@@ -86,7 +86,7 @@ const getCattle = asyncWrapper(async (req, res) => {
   const { cattleId } = req.params;
   if (!cattleId.startsWith("NGN")) {
     return res
-      .starts(StatusCodes.BAD_REQUEST)
+      .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Invalid CattleId"));
   }
   if (!cattleId) {
@@ -94,7 +94,7 @@ const getCattle = asyncWrapper(async (req, res) => {
       .status(StatusCodes.OK)
       .json(createResponseData(null, true, "Please Provide Cattle Id."));
   }
-  const cattle = await Cattle.findOne({ Id: cattleId });
+  const cattle = await Cattle.findOne({ cattleId: cattleId });
   if (!cattle) {
     return res
       .status(StatusCodes.BAD_REQUEST)
