@@ -70,6 +70,8 @@ const getAllSales = asyncWrapper(async (req, res) => {
     return {
       ...sale._doc,
       weight: matchingCattle ? matchingCattle.weight : null,
+      gender: matchingCattle ? matchingCattle.gender : null,
+      health: matchingCattle ? matchingCattle.health : null,
     };
   });
   res
