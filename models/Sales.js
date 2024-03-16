@@ -15,7 +15,7 @@ const salesSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    required: [true, "Please Specify Receiver Name."],
+    required: [true, "Please Provide Phone Number."],
   },
   address: {
     type: String,
@@ -75,7 +75,7 @@ const salesSchema = new mongoose.Schema({
   },
   animalType: {
     type: String,
-    required: [true, "Please Provide Animal Type.."],
+    required: [true, "Please Provide Animal Type."], // Corrected validation message
   },
   status: {
     type: String,

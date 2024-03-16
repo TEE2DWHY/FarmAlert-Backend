@@ -36,9 +36,8 @@ const registerCattle = asyncWrapper(async (req, res) => {
     const cattle = await Cattle.create({
       ...req.body,
       registeredBy: id,
-      image: result.secure_url,
+      cattleImage: result.secure_url,
     });
-    // const { _id, ...cattleData } = cattle.toJSON();
     res.status(StatusCodes.CREATED).json(
       createResponseData(
         {

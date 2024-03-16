@@ -4,11 +4,12 @@ const {
   deleteAgent,
   updateAgent,
 } = require("../../controllers/agent/agent");
-const appRouter = require("../../utils/appRouter");
+const authorization = require("../../middleware/authorization");
+const router = require("express").Router();
 
-appRouter.get("/agent", getAgent);
-appRouter.get("/all-agents", allAgents);
-appRouter.delete("/agent", deleteAgent);
-appRouter.put("/update/:agentId", updateAgent);
+router.get("/agent", authorization, getAgent);
+router.get("/all-agents", allAgents);
+router.delete("/agent", deleteAgent);
+router.put("/update/:agentId", updateAgent);
 
-module.exports = appRouter;
+module.exports = router;

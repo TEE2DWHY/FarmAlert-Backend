@@ -1,4 +1,4 @@
-const appRouter = require("../../utils/appRouter");
+const router = require("express").Router();
 const {
   registerCattle,
   getCattle,
@@ -9,12 +9,12 @@ const {
   verifyCattle,
 } = require("../../controllers/profiling/cattle");
 
-appRouter.post("/register-cattle", registerCattle);
-appRouter.get("/all-cattle", allCattle);
-appRouter.get("/get-cattle/:cattleId", getCattle);
-appRouter.get("/verify-cattle/:cattleId", verifyCattle);
-appRouter.get("/user-cattle", allUserCattle);
-appRouter.post("/update/:cattleId", updateCattle);
-appRouter.delete("/delete-cattle/:cattleId", deleteCattle);
+router.post("/register-cattle", registerCattle);
+router.get("/all-cattle", allCattle);
+router.get("/get-cattle/:cattleId", getCattle);
+router.get("/verify-cattle/:cattleId", verifyCattle);
+router.get("/user-cattle", allUserCattle);
+router.post("/update/:cattleId", updateCattle);
+router.delete("/delete-cattle/:cattleId", deleteCattle);
 
-module.exports = appRouter;
+module.exports = router;

@@ -32,19 +32,12 @@ const allUsers = asyncWrapper(async (req, res) => {
 
 // Get a Specific User
 const getUser = asyncWrapper(async (req, res) => {
-  const { token } = req.query;
-  if (!token) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Please Provide Token."));
-  }
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const { userId } = decodedToken;
-  const user = await User.findOne({ _id: userId });
+  const { id } = req.currentUser;
+  const user = await User.findOne({ _id: id });
   if (!user) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Invalid Token."));
+      .json(createResponseData(null, true, "User Not Found."));
   }
   const { password, ...userData } = user.toObject();
   res.status(StatusCodes.OK).json(

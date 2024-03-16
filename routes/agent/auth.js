@@ -1,4 +1,4 @@
-const appRouter = require("../../utils/appRouter");
+const router = require("express").Router();
 
 const {
   register,
@@ -8,10 +8,10 @@ const {
   resetPassword,
 } = require("../../controllers/agent/auth");
 
-appRouter.post("/agent/register", register);
-appRouter.get("/agent/verify-email", verifyEmail);
-appRouter.post("/agent/login", login);
-appRouter.post("/agent/forgot-password", forgotPassword);
-appRouter.post("/agent/reset-password", resetPassword);
+router.post("/agent/register", register);
+router.get("/agent/verify-email", verifyEmail);
+router.post("/agent/login", login);
+router.post("/agent/forgot-password", forgotPassword);
+router.post("/agent/reset-password", resetPassword);
 
-module.exports = appRouter;
+module.exports = router;

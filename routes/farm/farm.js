@@ -1,6 +1,6 @@
-const appRouter = require("../../utils/appRouter");
+const router = require("express").Router();
 const register = require("../../controllers/farm/register");
 
-appRouter.post("/farm", register);
+router.post("/farm", register);
 
-module.exports = appRouter;
+module.exports = router;

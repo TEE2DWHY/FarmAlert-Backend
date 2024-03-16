@@ -1,6 +1,6 @@
-const appRouter = require("../utils/appRouter");
+const router = require("express").Router();
 const getAddress = require("../controllers/lga");
 
-appRouter.get("/address", getAddress);
+router.get("/address", getAddress);
 
-module.exports = appRouter;
+module.exports = router;

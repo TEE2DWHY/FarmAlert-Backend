@@ -28,15 +28,8 @@ const allAgents = asyncWrapper(async (req, res) => {
 
 // Get a Specific Agent
 const getAgent = asyncWrapper(async (req, res) => {
-  const { token } = req.query;
-  if (!token) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Please provide token."));
-  }
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const { userId } = decodedToken;
-  const agent = await Agent.findOne({ _id: userId });
+  const { id } = req.currentUser;
+  const agent = await Agent.findOne({ _id: id });
   if (!agent) {
     return res
       .status(StatusCodes.BAD_REQUEST)

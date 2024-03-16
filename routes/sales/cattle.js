@@ -1,4 +1,4 @@
-const appRouter = require("../../utils/appRouter");
+const router = require("express").Router();
 const {
   registerSales,
   getAllSales,
@@ -7,10 +7,10 @@ const {
   getSale,
 } = require("../../controllers/sales/cattle");
 
-appRouter.post("/register-sales", registerSales);
-appRouter.get("/all-sales", getAllSales);
-appRouter.get("/:cattleId", getSale);
-appRouter.put("/:saleId", updateSale);
-appRouter.delete("/:saleId", deleteSale);
+router.post("/register-sales", registerSales);
+router.get("/all-sales", getAllSales);
+router.get("/:cattleId", getSale);
+router.put("/:saleId", updateSale);
+router.delete("/:saleId", deleteSale);
 
-module.exports = appRouter;
+module.exports = router;

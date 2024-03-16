@@ -1,4 +1,4 @@
-const appRouter = require("../../utils/appRouter");
+const router = require("express").Router();
 const {
   createVaccination,
   getVaccinatedAnimals,
@@ -14,17 +14,17 @@ const {
   getBirth,
 } = require("../../controllers/health/health");
 
-appRouter.post("/vaccination", createVaccination);
-appRouter.get("/vaccination", getVaccinatedAnimals);
-appRouter.post("/medication", createMedication);
-appRouter.get("/medication", getMedicatedAnimals);
-appRouter.post("/pregnancy", createPregnancy);
-appRouter.get("/pregnancy", getPregnantAnimals);
-appRouter.post("/vet-visit", createVetVisit);
-appRouter.get("/vet-visit", getVetVisit);
-appRouter.post("/birth", createBirth);
-appRouter.get("/birth", getBirth);
-appRouter.post("/death", createDeath);
-appRouter.get("/death", getDeath);
+router.post("/vaccination", createVaccination);
+router.get("/vaccination", getVaccinatedAnimals);
+router.post("/medication", createMedication);
+router.get("/medication", getMedicatedAnimals);
+router.post("/pregnancy", createPregnancy);
+router.get("/pregnancy", getPregnantAnimals);
+router.post("/vet-visit", createVetVisit);
+router.get("/vet-visit", getVetVisit);
+router.post("/birth", createBirth);
+router.get("/birth", getBirth);
+router.post("/death", createDeath);
+router.get("/death", getDeath);
 
-module.exports = appRouter;
+module.exports = router;

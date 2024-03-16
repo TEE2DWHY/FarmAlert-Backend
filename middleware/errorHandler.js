@@ -16,6 +16,8 @@ const errorHandler = async (err, req, res, next) => {
     message = "Token has expired.";
   } else if (err instanceof JsonWebTokenError) {
     message = "Invalid token. Please provide a valid token.";
+  } else if (err) {
+    console.log(err);
   }
 
   res.status(getStatusCode(err)).json({
