@@ -231,17 +231,27 @@ const createBirth = asyncWrapper(async (req, res) => {
 
 const getBirth = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const birth = await Health.Birth.find();
+  const births = await Health.Birth.find();
+  const cattleIds = births.map((birth) => birth.tagId);
+  const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
+  const birthWithDetails = births.map((birth) => {
+    const details = cattle.find((c) => c.cattleId === birth.tagId);
+    return {
+      ...birth._doc,
+      cattleImage: details.cattleImage,
+      age: details.age,
+    };
+  });
   res.status(StatusCodes.CREATED).json(
     createResponseData(
       {
-        birth,
+        births: birthWithDetails,
         registrarName: {
           fullName: name,
         },
       },
       false,
-      "Death Data is Returned Successfully."
+      "Birth Data is Returned Successfully."
     )
   );
 });
