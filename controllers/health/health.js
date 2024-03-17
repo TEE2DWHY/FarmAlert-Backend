@@ -1,6 +1,7 @@
 const Health = require("../../models/Health");
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const { StatusCodes } = require("http-status-codes");
+const Cattle = require("../../models/Cattle");
 
 // Function to create consistent response data
 const createResponseData = (payload, hasErrors, message) => {
@@ -36,10 +37,25 @@ const createVaccination = asyncWrapper(async (req, res) => {
 const getVaccinatedAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const vaccinatedCattles = await Health.Vaccination.find();
-  res.status(StatusCodes.CREATED).json(
+  const cattleIds = vaccinatedCattles.map(
+    (vaccinatedCattle) => vaccinatedCattle.tagId
+  );
+  const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
+  const vaccinatedCattlesWithDetails = vaccinatedCattles.map(
+    (vaccinatedCattle) => {
+      const details = cattle.find((c) => c.cattleId === vaccinatedCattle.tagId);
+      return {
+        ...vaccinatedCattle._doc,
+        cattleImage: details ? details.cattleImage : null,
+        health: details ? details.health : null,
+        age: details ? details.age : null,
+      };
+    }
+  );
+  res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        vaccinatedCattles,
+        vaccinatedCattles: vaccinatedCattlesWithDetails,
         registrarName: {
           fullName: name,
         },
@@ -75,10 +91,22 @@ const createMedication = asyncWrapper(async (req, res) => {
 const getMedicatedAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const medication = await Health.Medication.find();
+  const cattleIds = medication.map(
+    (medicatedAnimals) => medicatedAnimals.tagId
+  );
+  const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
+  const medicatedAnimalsWithDetails = medication.map((medicatedAnimals) => {
+    const details = cattle.find((c) => c.cattleId === medicatedAnimals.tagId);
+    return {
+      ...medicatedAnimals._doc,
+      cattleImage: details ? details.cattleImage : null,
+      age: details ? details.age : null,
+    };
+  });
   res.status(StatusCodes.CREATED).json(
     createResponseData(
       {
-        medication,
+        allMedicatedAnimals: medicatedAnimalsWithDetails,
         registrarName: {
           fullName: name,
         },
@@ -114,10 +142,22 @@ const createPregnancy = asyncWrapper(async (req, res) => {
 const getPregnantAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const pregnantAnimals = await Health.Pregnant.find();
+  const cattleIds = pregnantAnimals.map(
+    (pregnantAnimal) => pregnantAnimal.tagId
+  );
+  const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
+  const pregnantAnimalsWithDetails = pregnantAnimals.map((pregnantAnimal) => {
+    const details = cattle.find((c) => c.cattleId === pregnantAnimal.tagId);
+    return {
+      ...pregnantAnimal._doc,
+      cattleImage: details ? details.cattleImage : null,
+      age: details ? details.age : null,
+    };
+  });
   res.status(StatusCodes.CREATED).json(
     createResponseData(
       {
-        pregnantAnimals,
+        pregnantAnimals: pregnantAnimalsWithDetails,
         registrarName: {
           fullName: name,
         },
