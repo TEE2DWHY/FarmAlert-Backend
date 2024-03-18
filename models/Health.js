@@ -29,7 +29,7 @@ const medicationSchema = new mongoose.Schema({
     type: String,
   },
   medication: {
-    type: [String],
+    type: String,
   },
   dosage: {
     type: String,
