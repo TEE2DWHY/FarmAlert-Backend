@@ -280,11 +280,21 @@ const createDeath = asyncWrapper(async (req, res) => {
 
 const getDeath = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const death = await Health.Death.find();
+  const deaths = await Health.Death.find();
+  const cattleIds = deaths.map((birth) => birth.tagId);
+  const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
+  const deathWithDetails = births.map((death) => {
+    const details = cattle.find((c) => c.cattleId === death.tagId);
+    return {
+      ...death._doc,
+      cattleImage: details.cattleImage,
+      age: details.age,
+    };
+  });
   res.status(StatusCodes.CREATED).json(
     createResponseData(
       {
-        death,
+        deaths: deathWithDetails,
         registrarName: {
           fullName: name,
         },
