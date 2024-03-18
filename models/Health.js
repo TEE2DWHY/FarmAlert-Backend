@@ -32,10 +32,10 @@ const medicationSchema = new mongoose.Schema({
     type: [String],
   },
   dosage: {
-    type: [String],
+    type: String,
   },
   date: {
-    type: [String],
+    type: String,
   },
   createdBy: [
     {
