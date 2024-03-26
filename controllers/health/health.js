@@ -36,7 +36,7 @@ const createVaccination = asyncWrapper(async (req, res) => {
 
 const getVaccinatedAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const vaccinatedCattles = await Health.Vaccination.find();
+  const vaccinatedCattles = await Health.Vaccination.find({ createdBy: id });
   const cattleIds = vaccinatedCattles.map(
     (vaccinatedCattle) => vaccinatedCattle.tagId
   );
@@ -90,7 +90,7 @@ const createMedication = asyncWrapper(async (req, res) => {
 
 const getMedicatedAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const medication = await Health.Medication.find();
+  const medication = await Health.Medication.find({ createdBy: id });
   const cattleIds = medication.map(
     (medicatedAnimals) => medicatedAnimals.tagId
   );
@@ -141,7 +141,7 @@ const createPregnancy = asyncWrapper(async (req, res) => {
 
 const getPregnantAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const pregnantAnimals = await Health.Pregnant.find();
+  const pregnantAnimals = await Health.Pregnant.find({ createdBy: id });
   const cattleIds = pregnantAnimals.map(
     (pregnantAnimal) => pregnantAnimal.tagId
   );
@@ -192,7 +192,7 @@ const createVetVisit = asyncWrapper(async (req, res) => {
 
 const getVetVisit = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const vetVisit = await Health.VetVisit.find();
+  const vetVisit = await Health.VetVisit.find({ createdBy: id });
   res.status(StatusCodes.CREATED).json(
     createResponseData(
       {
@@ -231,7 +231,7 @@ const createBirth = asyncWrapper(async (req, res) => {
 
 const getBirth = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const births = await Health.Birth.find();
+  const births = await Health.Birth.find({ createdBy: id });
   const cattleIds = births.map((birth) => birth.tagId);
   const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
   const birthWithDetails = births.map((birth) => {
@@ -280,7 +280,7 @@ const createDeath = asyncWrapper(async (req, res) => {
 
 const getDeath = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const deaths = await Health.Death.find();
+  const deaths = await Health.Death.find({ createdBy: id });
   const cattleIds = deaths.map((birth) => birth.tagId);
   const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
   const deathWithDetails = births.map((death) => {
