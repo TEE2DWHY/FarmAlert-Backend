@@ -37,6 +37,13 @@ const createVaccination = asyncWrapper(async (req, res) => {
 const getVaccinatedAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const vaccinatedCattles = await Health.Vaccination.find({ createdBy: id });
+  if (vaccinatedCattles.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        createResponseData(null, false, "No Vaccination has been Created.")
+      );
+  }
   const cattleIds = vaccinatedCattles.map(
     (vaccinatedCattle) => vaccinatedCattle.tagId
   );
@@ -91,6 +98,11 @@ const createMedication = asyncWrapper(async (req, res) => {
 const getMedicatedAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const medication = await Health.Medication.find({ createdBy: id });
+  if (medication.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(createResponseData(null, false, "No Medication has been Created."));
+  }
   const cattleIds = medication.map(
     (medicatedAnimals) => medicatedAnimals.tagId
   );
@@ -142,6 +154,17 @@ const createPregnancy = asyncWrapper(async (req, res) => {
 const getPregnantAnimals = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const pregnantAnimals = await Health.Pregnant.find({ createdBy: id });
+  if (pregnantAnimals.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        createResponseData(
+          null,
+          false,
+          "No pregnantAnimal data has been Created."
+        )
+      );
+  }
   const cattleIds = pregnantAnimals.map(
     (pregnantAnimal) => pregnantAnimal.tagId
   );
@@ -193,6 +216,13 @@ const createVetVisit = asyncWrapper(async (req, res) => {
 const getVetVisit = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const vetVisit = await Health.VetVisit.find({ createdBy: id });
+  if (vetVisit.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        createResponseData(null, false, "No VetVisit data has been Created.")
+      );
+  }
   res.status(StatusCodes.CREATED).json(
     createResponseData(
       {
@@ -232,6 +262,11 @@ const createBirth = asyncWrapper(async (req, res) => {
 const getBirth = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const births = await Health.Birth.find({ createdBy: id });
+  if (births.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(createResponseData(null, false, "No Birth data has been Created."));
+  }
   const cattleIds = births.map((birth) => birth.tagId);
   const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
   const birthWithDetails = births.map((birth) => {
@@ -281,6 +316,11 @@ const createDeath = asyncWrapper(async (req, res) => {
 const getDeath = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
   const deaths = await Health.Death.find({ createdBy: id });
+  if (deaths.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(createResponseData(null, false, "No Death Data has been Created."));
+  }
   const cattleIds = deaths.map((birth) => birth.tagId);
   const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
   const deathWithDetails = births.map((death) => {
