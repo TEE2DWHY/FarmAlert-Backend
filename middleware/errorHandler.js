@@ -4,7 +4,7 @@ const { TokenExpiredError, JsonWebTokenError } = require("jsonwebtoken");
 const errorHandler = async (err, req, res, next) => {
   let payload = null;
   let hasErrors = true;
-  let message = "Internal Server Error";
+  let message = err.message;
 
   if (err.name === "ValidationError") {
     message = err.message;

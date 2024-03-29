@@ -215,18 +215,28 @@ const createVetVisit = asyncWrapper(async (req, res) => {
 
 const getVetVisit = asyncWrapper(async (req, res) => {
   const { id, name } = req.currentUser;
-  const vetVisit = await Health.VetVisit.find({ createdBy: id });
-  if (vetVisit.length === 0) {
+  const vetVisits = await Health.VetVisit.find({ createdBy: id });
+  if (vetVisits.length === 0) {
     return res
       .status(StatusCodes.OK)
       .json(
         createResponseData(null, false, "No VetVisit data has been Created.")
       );
   }
+  const cattleIds = vetVisits.map((vetVisit) => birth.tagId);
+  const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
+  const vetVisitWithDetails = vetVisits.map((vetVisit) => {
+    const details = cattle.find((c) => c.cattleId === vetVisit.tagId);
+    return {
+      ...vetVisit._doc,
+      cattleImage: details ? details.cattleImage : null,
+      age: details ? details.age : null,
+    };
+  });
   res.status(StatusCodes.CREATED).json(
     createResponseData(
       {
-        vetVisit,
+        vetVisitWithDetails,
         registrarName: {
           fullName: name,
         },
@@ -273,8 +283,8 @@ const getBirth = asyncWrapper(async (req, res) => {
     const details = cattle.find((c) => c.cattleId === birth.tagId);
     return {
       ...birth._doc,
-      cattleImage: details.cattleImage,
-      age: details.age,
+      cattleImage: details ? details.cattleImage : null,
+      age: details ? details.age : null,
     };
   });
   res.status(StatusCodes.CREATED).json(
@@ -321,14 +331,14 @@ const getDeath = asyncWrapper(async (req, res) => {
       .status(StatusCodes.OK)
       .json(createResponseData(null, false, "No Death Data has been Created."));
   }
-  const cattleIds = deaths.map((birth) => birth.tagId);
+  const cattleIds = deaths.map((death) => death.tagId);
   const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
-  const deathWithDetails = births.map((death) => {
+  const deathWithDetails = deaths.map((death) => {
     const details = cattle.find((c) => c.cattleId === death.tagId);
     return {
       ...death._doc,
-      cattleImage: details.cattleImage,
-      age: details.age,
+      cattleImage: details ? details.cattleImage : null,
+      age: details ? details.age : null,
     };
   });
   res.status(StatusCodes.CREATED).json(
