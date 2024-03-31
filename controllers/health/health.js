@@ -231,9 +231,6 @@ const getVetVisit = asyncWrapper(async (req, res) => {
       ...vetVisit._doc,
       cattleImage: details ? details.cattleImage : null,
       age: details ? details.age : null,
-      gender: details ? details.gender : null,
-      group: details ? details.group : null,
-      dateOfBirth: details ? details.DOB : null,
     };
   });
   res.status(StatusCodes.CREATED).json(
@@ -345,6 +342,9 @@ const getDeath = asyncWrapper(async (req, res) => {
       ...death._doc,
       cattleImage: details ? details.cattleImage : null,
       age: details ? details.age : null,
+      gender: details ? details.gender : null,
+      group: details ? details.group : null,
+      dateOfBirth: details ? details.DOB : null,
     };
   });
   res.status(StatusCodes.CREATED).json(
