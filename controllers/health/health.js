@@ -223,7 +223,7 @@ const getVetVisit = asyncWrapper(async (req, res) => {
         createResponseData(null, false, "No VetVisit data has been Created.")
       );
   }
-  const cattleIds = vetVisits.map((vetVisit) => birth.tagId);
+  const cattleIds = vetVisits.map((vetVisit) => vetVisit.tagId);
   const cattle = await Cattle.find({ cattleId: { $in: cattleIds } });
   const vetVisitWithDetails = vetVisits.map((vetVisit) => {
     const details = cattle.find((c) => c.cattleId === vetVisit.tagId);
@@ -231,6 +231,9 @@ const getVetVisit = asyncWrapper(async (req, res) => {
       ...vetVisit._doc,
       cattleImage: details ? details.cattleImage : null,
       age: details ? details.age : null,
+      gender: details ? details.gender : null,
+      group: details ? details.group : null,
+      dateOfBirth: details ? details.DOB : null,
     };
   });
   res.status(StatusCodes.CREATED).json(
@@ -285,6 +288,9 @@ const getBirth = asyncWrapper(async (req, res) => {
       ...birth._doc,
       cattleImage: details ? details.cattleImage : null,
       age: details ? details.age : null,
+      gender: details ? details.gender : null,
+      group: details ? details.group : null,
+      dateOfBirth: details ? details.DOB : null,
     };
   });
   res.status(StatusCodes.CREATED).json(
