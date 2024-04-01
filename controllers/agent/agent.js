@@ -2,6 +2,7 @@ const Agent = require("../../models/Agent");
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 // Function to create consistent response data
 const createResponseData = (payload, hasErrors, message) => {
@@ -83,15 +84,9 @@ const updateAgent = asyncWrapper(async (req, res) => {
 
 // Delete a Specific Agent
 const deleteAgent = asyncWrapper(async (req, res) => {
-  const { token } = req.query;
-  if (!token) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Please provide token."));
-  }
+  const { id } = req.currentUser;
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const { userId, email } = decodedToken;
-  const agent = await User.findOneAndDelete({ _id: userId });
+  const agent = await Agent.findOneAndDelete({ _id: id });
   if (!agent) {
     return res
       .status(StatusCodes.BAD_REQUEST)
@@ -99,7 +94,36 @@ const deleteAgent = asyncWrapper(async (req, res) => {
   }
   res
     .status(StatusCodes.OK)
-    .json(createResponseData(`Account for ${email} is deleted.`, false, null));
+    .json(createResponseData("Account for  is deleted.", false, null));
 });
 
-module.exports = { allAgents, getAgent, updateAgent, deleteAgent };
+const changePassword = asyncWrapper(async (req, res) => {
+  const { id } = req.currentUser;
+  const { oldPassword, newPassword } = req.body;
+  const agent = await Agent.findOne({ _id: id });
+  if (!agent) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Agent Does Not Exist."));
+  }
+  const passwordMatch = await bcrypt.compare(oldPassword, agent.password);
+  if (!passwordMatch) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Incorrect Old Password."));
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  agent.password = hashedPassword;
+  await agent.save();
+  res
+    .status(StatusCodes.OK)
+    .json(createResponseData(null, false, "Password Update is Successful"));
+});
+
+module.exports = {
+  allAgents,
+  getAgent,
+  updateAgent,
+  deleteAgent,
+  changePassword,
+};

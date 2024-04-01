@@ -2,6 +2,7 @@ const User = require("../../models/User");
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 // Function to create consistent response data
 const createResponseData = (payload, hasErrors, message) => {
@@ -103,4 +104,27 @@ const deleteUser = asyncWrapper(async (req, res) => {
     .json(createResponseData(null, false, `Account for ${email} is Deleted.`));
 });
 
-module.exports = { allUsers, getUser, updateUser, deleteUser };
+const changePassword = asyncWrapper(async (req, res) => {
+  const { id } = req.currentUser;
+  const { oldPassword, newPassword } = req.body;
+  const user = await User.findOne({ _id: id });
+  if (!user) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "User Does Not Exist."));
+  }
+  const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!passwordMatch) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Incorrect Old Password."));
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
+  res
+    .status(StatusCodes.OK)
+    .json(createResponseData(null, false, "Password Update is Successful"));
+});
+
+module.exports = { allUsers, getUser, updateUser, deleteUser, changePassword };
