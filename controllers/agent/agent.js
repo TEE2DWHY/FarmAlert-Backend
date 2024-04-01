@@ -46,40 +46,43 @@ const getAgent = asyncWrapper(async (req, res) => {
 
 // Update Agent
 const updateAgent = asyncWrapper(async (req, res) => {
-  const { agentId } = req.params;
+  const { userId } = req.params;
   const data = { ...req.body };
-  if (!agentId) {
+  if (!userId) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Please provide agent Id."));
+      .json(createResponseData(null, true, "Please Provide UserId."));
   }
   if (Object.keys(data).length === 0) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "No update data provided."));
+      .json(createResponseData(null, true, "Please Provide Data."));
   }
-  const agent = await Agent.findOneAndUpdate(
-    { _id: agentId },
-    { $set: data },
-    { new: true }
-  );
-  if (!agent) {
+  const existingUser = await Agent.findById(userId);
+  if (!existingUser) {
     return res
       .status(StatusCodes.NOT_FOUND)
       .json(
-        createResponseData(null, true, `Agent with Id: ${agentId} not found.`)
+        createResponseData(null, true, `User with Id: ${userId} not found.`)
       );
   }
-  const { password, ...updatedAgentData } = agent.toObject();
-  res
-    .status(StatusCodes.OK)
-    .json(
-      createResponseData(
-        updatedAgentData,
-        false,
-        `Agent with Id: ${agentId} updated successfully.`
-      )
-    );
+  // Update only non-null fields from req.body
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== null) {
+      existingUser[key] = data[key];
+    }
+  });
+  const updatedUser = await existingUser.save();
+  const { password, ...updatedUserData } = updatedUser.toObject();
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        agent: updatedUserData,
+      },
+      false,
+      `User with Id: ${userId} is Successfully Updated.`
+    )
+  );
 });
 
 // Delete a Specific Agent
