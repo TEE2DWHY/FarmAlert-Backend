@@ -10,7 +10,7 @@ const authorization = require("../../middleware/authorization");
 
 router.get("/user", authorization, getUser);
 router.get("/all-user", authorization, allUsers);
-router.put("/update/:userId", authorization, updateUser);
+router.put("/update-user", authorization, updateUser);
 router.post("/user/change-password", authorization, changePassword);
 router.delete("/user", authorization, deleteUser);
 

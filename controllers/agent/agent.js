@@ -46,41 +46,34 @@ const getAgent = asyncWrapper(async (req, res) => {
 
 // Update Agent
 const updateAgent = asyncWrapper(async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.currentUser;
   const data = { ...req.body };
-  if (!userId) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Please Provide UserId."));
-  }
   if (Object.keys(data).length === 0) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Please Provide Data."));
   }
-  const existingUser = await Agent.findById(userId);
-  if (!existingUser) {
+  const existingAgent = await Agent.findById(id);
+  if (!existingAgent) {
     return res
       .status(StatusCodes.NOT_FOUND)
-      .json(
-        createResponseData(null, true, `User with Id: ${userId} not found.`)
-      );
+      .json(createResponseData(null, true, `User with Id: ${id} not found.`));
   }
   // Update only non-null fields from req.body
   Object.keys(data).forEach((key) => {
     if (data[key] !== null) {
-      existingUser[key] = data[key];
+      existingAgent[key] = data[key];
     }
   });
-  const updatedUser = await existingUser.save();
-  const { password, ...updatedUserData } = updatedUser.toObject();
+  const updatedAgent = await existingUser.save();
+  const { password, ...updatedUserData } = updatedAgent.toObject();
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
         agent: updatedUserData,
       },
       false,
-      `User with Id: ${userId} is Successfully Updated.`
+      `User with Id: ${id} is Successfully Updated.`
     )
   );
 });
