@@ -66,11 +66,21 @@ const updateUser = asyncWrapper(async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Please Provide Data."));
   }
-  const updatedUser = await User.findOneAndUpdate(
-    { _id: userId },
-    { $set: data },
-    { new: true }
-  );
+  const existingUser = await User.findById(userId);
+  if (!existingUser) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json(
+        createResponseData(null, true, `User with Id: ${userId} not found.`)
+      );
+  }
+  // Update only non-null fields from req.body
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== null) {
+      existingUser[key] = data[key];
+    }
+  });
+  const updatedUser = await existingUser.save();
   const { password, ...updatedUserData } = updatedUser.toObject();
   res.status(StatusCodes.OK).json(
     createResponseData(
