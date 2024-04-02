@@ -65,7 +65,7 @@ const updateAgent = asyncWrapper(async (req, res) => {
       existingAgent[key] = data[key];
     }
   });
-  const updatedAgent = await existingUser.save();
+  const updatedAgent = await existingAgent.save();
   const { password, ...updatedUserData } = updatedAgent.toObject();
   res.status(StatusCodes.OK).json(
     createResponseData(

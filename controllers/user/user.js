@@ -61,7 +61,7 @@ const updateUser = asyncWrapper(async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Please Provide Data."));
   }
-  const existingUser = await User.findById(id);
+  const existingUser = await User.findOne({ _id: id });
   if (!existingUser) {
     return res
       .status(StatusCodes.NOT_FOUND)
@@ -81,7 +81,7 @@ const updateUser = asyncWrapper(async (req, res) => {
         user: updatedUserData,
       },
       false,
-      `User with Id: ${userId} is Successfully Updated.`
+      `User with Id: ${id} is Successfully Updated.`
     )
   );
 });
