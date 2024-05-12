@@ -12,7 +12,7 @@ const {
   getVetVisit,
   getDeath,
   getBirth,
-} = require("../../controllers/health/health");
+} = require("../../controllers/health/dog");
 
 router.post("/dog/vaccination", createVaccination);
 router.get("/dog/vaccination", getVaccinatedAnimals);
