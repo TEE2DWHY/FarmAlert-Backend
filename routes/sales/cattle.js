@@ -7,10 +7,10 @@ const {
   getSale,
 } = require("../../controllers/sales/cattle");
 
-router.post("/register-sales", registerSales);
-router.get("/all-sales", getAllSales);
-router.get("/:cattleId", getSale);
-router.put("/:saleId", updateSale);
-router.delete("/:saleId", deleteSale);
+router.post("/cattle/register-sales", registerSales);
+router.get("/cattle/all-sales", getAllSales);
+router.get("/cattle/:cattleId", getSale);
+router.put("/cattle/:saleId", updateSale);
+router.delete("/cattle/:saleId", deleteSale);
 
 module.exports = router;

@@ -12,19 +12,19 @@ const {
   getVetVisit,
   getDeath,
   getBirth,
-} = require("../../controllers/health/health");
+} = require("../../controllers/health/cattle");
 
-router.post("/vaccination", createVaccination);
-router.get("/vaccination", getVaccinatedAnimals);
-router.post("/medication", createMedication);
-router.get("/medication", getMedicatedAnimals);
-router.post("/pregnancy", createPregnancy);
-router.get("/pregnancy", getPregnantAnimals);
-router.post("/vet-visit", createVetVisit);
-router.get("/vet-visit", getVetVisit);
-router.post("/birth", createBirth);
-router.get("/birth", getBirth);
-router.post("/death", createDeath);
-router.get("/death", getDeath);
+router.post("/cattle/vaccination", createVaccination);
+router.get("/cattle/vaccination", getVaccinatedAnimals);
+router.post("/cattle/medication", createMedication);
+router.get("/cattle/medication", getMedicatedAnimals);
+router.post("/cattle/pregnancy", createPregnancy);
+router.get("/cattle/pregnancy", getPregnantAnimals);
+router.post("/cattle/vet-visit", createVetVisit);
+router.get("/cattle/vet-visit", getVetVisit);
+router.post("/cattle/birth", createBirth);
+router.get("/cattle/birth", getBirth);
+router.post("/cattle/death", createDeath);
+router.get("/cattle/death", getDeath);
 
 module.exports = router;
