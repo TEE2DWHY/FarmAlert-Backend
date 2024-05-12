@@ -43,7 +43,7 @@ app.use("/register", authorization, farmRouter);
 app.use("/health", authorization, healthRouterCattle);
 app.use("/health", authorization, healthRouterDog);
 app.use("/cattle", authorization, upload.single("cattleImage"), cattleRouter);
-app.use("/dog", authorization, upload.single("cattleImage"), dogRouter);
+app.use("/dog", authorization, upload.single("dogImage"), dogRouter);
 app.use("/sales", authorization, upload.single("image"), salesRouterCattle);
 app.use("/sales", authorization, upload.single("image"), salesRouterDog);
 app.use(userRouter, agentRouter, lgaRouter);
