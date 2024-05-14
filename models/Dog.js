@@ -69,9 +69,9 @@ const DogSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Dog Health Status."],
   },
-  DogImage: {
+  dogImage: {
     type: String,
-    required: [true, "Please Provide Vaccination Image"],
+    required: [true, "Please Provide Dog Image"],
   },
   // sales: {
   //   type: mongoose.Schema.Types.ObjectId,
