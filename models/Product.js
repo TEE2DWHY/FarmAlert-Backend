@@ -43,26 +43,9 @@ const ProductSchema = new mongoose.Schema({
       required: [true, "Please provide farm owned"],
     },
   },
-  paymentDetails: {
-    cardHolderName: {
-      address: String,
-      required: [true, "Please provide card holder name"],
-    },
-    cardNumber: {
-      address: String,
-      required: [true, "Please provide card number"],
-    },
-    expiryDate: {
-      month: {
-        type: String,
-      },
-      year: {
-        type: String,
-      },
-      securityCode: {
-        type: String,
-      },
-    },
+  transactionStatus: {
+    type: Boolean,
+    default: false,
   },
   user: [
     {
