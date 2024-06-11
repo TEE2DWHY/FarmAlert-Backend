@@ -39,10 +39,9 @@ const getProduct = asyncWrapper(async (req, res) => {
 
 //create payment page
 const createPayment = asyncWrapper(async (req, res) => {
-  const { id, name } = req.currentUser;
   const params = JSON.stringify({
-    email: "customer@email.com",
-    amount: "20000",
+    email: req.body.email,
+    amount: req.body.amount,
   });
 
   const options = {
@@ -104,14 +103,17 @@ const getTransactionStatus = asyncWrapper(async (req, res) => {
 });
 
 const updateTransactionStatus = asyncWrapper(async (req, res) => {
-  const product = await Product.findById({ _id: req.body.id });
+  const product = await Product.findByIdAndUpdate(
+    { _id: req.body.id },
+    { $set: { transactionStatus: true } },
+    { new: true }
+  );
   if (!product) {
     return res
       .status(StatusCodes.NOT_FOUND)
       .json(createResponseData(null, false, "Product does not exist."));
   }
-  product.transactionStatus = true;
-  await product.save();
+
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
