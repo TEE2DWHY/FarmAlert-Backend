@@ -27,7 +27,15 @@ const createProduct = asyncWrapper(async (req, res) => {
 });
 
 // get product
-const getProduct = asyncWrapper(async (req, res) => {});
+const getProduct = asyncWrapper(async (req, res) => {
+  const { productId } = req.params;
+  if (!productId) {
+    return res
+      .status(StatusCodes.OK)
+      .json(createResponseData(null, true, "Please Provide Product Id."));
+  }
+  console.log(productId);
+});
 
 //create payment page
 const createPayment = asyncWrapper(async (req, res) => {
@@ -48,15 +56,15 @@ const createPayment = asyncWrapper(async (req, res) => {
     },
   };
 
-  const req = https
-    .request(options, (res) => {
+  const request = https
+    .request(options, (response) => {
       let data = "";
 
-      res.on("data", (chunk) => {
+      response.on("data", (chunk) => {
         data += chunk;
       });
 
-      res.on("end", () => {
+      response.on("end", () => {
         console.log(JSON.parse(data));
       });
     })
@@ -64,8 +72,8 @@ const createPayment = asyncWrapper(async (req, res) => {
       console.error(error);
     });
 
-  req.write(params);
-  req.end();
+  request.write(params);
+  request.end();
 });
 
 const getTransactionStatus = asyncWrapper(async (req, res) => {

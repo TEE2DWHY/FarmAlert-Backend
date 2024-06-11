@@ -18,8 +18,10 @@ const ProductSchema = new mongoose.Schema({
     required: [true, "Please provide quantity"],
   },
   shippingDetails: {
-    address: String,
-    required: [true, "Please provide shipping address"],
+    address: {
+      type: String,
+      required: [true, "Please provide shipping address"],
+    },
   },
   petDetails: {
     petName: {
@@ -42,6 +44,9 @@ const ProductSchema = new mongoose.Schema({
       type: String,
       required: [true, "Please provide farm owned"],
     },
+  },
+  totalCost: {
+    type: String,
   },
   transactionStatus: {
     type: Boolean,
