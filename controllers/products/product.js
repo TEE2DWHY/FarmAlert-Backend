@@ -31,10 +31,43 @@ const getProduct = asyncWrapper(async (req, res) => {
   const { productId } = req.params;
   if (!productId) {
     return res
-      .status(StatusCodes.OK)
+      .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Please Provide Product Id."));
   }
-  console.log(productId);
+  const product = await Product.findOne({ _id: productId });
+  if (!product) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createResponseData(null, true, "Product Does Not Exist."));
+  }
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        product: product,
+      },
+      false,
+      "Product Is Fetched successfully ."
+    )
+  );
+});
+
+// get all products
+const getAllProducts = asyncWrapper(async (req, res) => {
+  const product = await Product.find();
+  if (product.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(createResponseData({}, false, "User hasn't created any product."));
+  }
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        product: product,
+      },
+      false,
+      "Products Fetched successfully ."
+    )
+  );
 });
 
 //create payment page
@@ -130,5 +163,6 @@ module.exports = {
   createPayment,
   getTransactionStatus,
   updateTransactionStatus,
+  getAllProducts,
   getProduct,
 };
