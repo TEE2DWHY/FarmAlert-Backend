@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const Product = require("../../models/Product");
 const https = require("https");
+
 // Function to create consistent response data
 const createResponseData = (payload, hasErrors, message) => {
   return {
