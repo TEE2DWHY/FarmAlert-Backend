@@ -31,14 +31,14 @@ const PAYSTACK_KEY = process.env.PAYSTACK_KEY;
 
 // get Order
 const getOrder = asyncWrapper(async (req, res) => {
-  const { OrderId } = req.params;
-  if (!OrderId) {
+  const { orderId } = req.params;
+  if (!orderId) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Please Provide Order Id."));
   }
-  const Order = await Order.findOne({ _id: OrderId });
-  if (!Order) {
+  const order = await Order.findOne({ _id: orderId });
+  if (!order) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Order Does Not Exist."));
@@ -46,7 +46,7 @@ const getOrder = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        Order: Order,
+        order: order,
       },
       false,
       "Order Is Fetched successfully ."
@@ -57,7 +57,7 @@ const getOrder = asyncWrapper(async (req, res) => {
 // get all orders
 const getAllOrders = asyncWrapper(async (req, res) => {
   const order = await Order.find();
-  if (Order.length === 0) {
+  if (order.length === 0) {
     return res
       .status(StatusCodes.OK)
       .json(createResponseData({}, false, "User hasn't created any Order."));
@@ -65,7 +65,7 @@ const getAllOrders = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        Order: Order,
+        order: order,
       },
       false,
       "Orders Fetched successfully ."
@@ -84,7 +84,7 @@ const createPayment = asyncWrapper(async (req, res) => {
 
   const params = JSON.stringify({
     email: req.body.email,
-    amount: req.body.amount * 100,
+    amount: req.body.amount * 100, // because paystack by default is in kobo
   });
 
   const options = {
@@ -99,15 +99,26 @@ const createPayment = asyncWrapper(async (req, res) => {
   };
 
   const request = https.request(options, (response) => {
-    let data = "";
+    let txData = "";
 
     response.on("data", (chunk) => {
-      data += chunk;
+      txData += chunk;
     });
 
     response.on("end", () => {
-      console.log(JSON.parse(data));
-      res.status(response.statusCode).json(JSON.parse(data));
+      const responseData = JSON.parse(txData);
+      const { data } = responseData;
+      res.status(response.statusCode).json(
+        createResponseData(
+          {
+            paymentUrl: data.authorization_url,
+            reference: data.reference,
+            accessCode: data.access_code,
+          },
+          false,
+          "Payment Url Returned Successfully."
+        )
+      );
     });
   });
 
@@ -123,54 +134,83 @@ const createPayment = asyncWrapper(async (req, res) => {
 });
 
 const getTransactionStatus = asyncWrapper(async (req, res) => {
-  const { reference } = req.params;
+  try {
+    const { reference } = req.params;
+    if (!reference) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Please provide a transaction reference number",
+      });
+    }
+    const options = {
+      hostname: "api.paystack.co",
+      port: 443,
+      path: `/transaction/verify/${reference}`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${PAYSTACK_KEY}`,
+      },
+    };
+    const request = https.request(options, (response) => {
+      let txData = "";
+      response.on("data", (chunk) => {
+        txData += chunk;
+      });
+      response.on("end", () => {
+        try {
+          const responseData = JSON.parse(txData);
 
-  const options = {
-    hostname: "api.paystack.co",
-    port: 443,
-    path: `/transaction/verify/${reference}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${PAYSTACK_KEY}`,
-    },
-  };
+          if (response.statusCode !== 200) {
+            // Handle Paystack API error responses
+            return res
+              .status(response.statusCode)
+              .json(createResponseData(null, true, responseData.message));
+          }
 
-  const request = https.request(options, (response) => {
-    let data = "";
+          const { data } = responseData;
+          console.log(responseData); // Log the response data for debugging
 
-    response.on("data", (chunk) => {
-      data += chunk;
+          res.status(response.statusCode).json(
+            createResponseData(
+              {
+                id: data.id,
+                status: data.status,
+                reference: data.reference,
+                amount: data.amount / 100,
+                email: data.customer.email,
+              },
+              false,
+              "Transaction Order Details Retrieved Successfully."
+            )
+          );
+        } catch (error) {
+          console.error("Error parsing response:", error);
+          res.status(500).json({ error: "Error parsing Paystack response" });
+        }
+      });
     });
 
-    response.on("end", () => {
-      const responseData = JSON.parse(data);
-      console.log(responseData); // Log the response data for debugging
-
-      // Example: Send the response back to the client
-      res.status(response.statusCode).json(responseData);
+    request.on("error", (error) => {
+      console.error("Request error:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while processing your request." });
     });
-  });
 
-  // Handle errors in making the request
-  request.on("error", (error) => {
-    console.error(error);
-    // Example: Handle the error response
-    res
-      .status(500)
-      .json({ error: "An error occurred while processing your request." });
-  });
-
-  // End the request
-  request.end();
+    // End the request
+    request.end();
+  } catch (error) {
+    console.error("Catch block error:", error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+  }
 });
 
 const updateTransactionStatus = asyncWrapper(async (req, res) => {
-  const Order = await Order.findByIdAndUpdate(
+  const order = await Order.findByIdAndUpdate(
     { _id: req.body.id },
     { $set: { transactionStatus: true } },
     { new: true }
   );
-  if (!Order) {
+  if (!order) {
     return res
       .status(StatusCodes.NOT_FOUND)
       .json(createResponseData(null, false, "Order does not exist."));
