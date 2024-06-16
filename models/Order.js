@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ProductSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema({
   tagNumber: {
     type: String,
     required: [true, "Please provide product name"],
@@ -62,4 +62,4 @@ const ProductSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Product", ProductSchema);
+module.exports = mongoose.model("Order", OrderSchema);
