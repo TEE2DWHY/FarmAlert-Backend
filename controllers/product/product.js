@@ -50,6 +50,11 @@ const createProduct = asyncWrapper(async (req, res) => {
 
 const getAllProducts = asyncWrapper(async (req, res) => {
   const allProducts = await Product.find();
+  if (allProducts.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(createResponseData(null, false, "No Product Has Been Created."));
+  }
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
