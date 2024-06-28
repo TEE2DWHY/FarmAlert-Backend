@@ -1,6 +1,7 @@
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const Product = require("../../models/Product");
 const cloudinary = require("../../utils/cloudinary");
+const { StatusCodes } = require("http-status-codes");
 
 // Function to create consistent response data
 const createResponseData = (payload, hasErrors, message) => {
@@ -13,6 +14,7 @@ const createResponseData = (payload, hasErrors, message) => {
 
 // create new product
 const createProduct = asyncWrapper(async (req, res) => {
+  let result;
   try {
     const { id } = req.currentUser;
     if (!req.file) {
@@ -20,6 +22,7 @@ const createProduct = asyncWrapper(async (req, res) => {
         .status(StatusCodes.BAD_REQUEST)
         .json(createResponseData(null, true, "Please Upload Product Image."));
     }
+    const { path } = req.file;
     result = await cloudinary.uploader.upload(path);
     const newProduct = await Product.create({
       ...req.body,

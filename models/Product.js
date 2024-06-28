@@ -18,37 +18,19 @@ const ProductSchema = new mongoose.Schema({
     required: [true, "Please provide product price"],
   },
   stockAvailable: {
-    address: {
-      type: Number,
-      required: [true, "Please provide available stock for product"],
-    },
+    type: Number,
+    required: [true, "Please provide available stock for product"],
   },
   stockSold: {
-    address: {
-      type: Number,
-      required: [true, "Please provide the number stock sold"],
-    },
+    type: Number,
+    required: [true, "Please provide the number stock sold"],
   },
-  stockSold: {
-    address: {
-      type: Number,
-      required: [true, "Please provide the total stock"],
-    },
+  totalStock: {
+    type: Number,
+    required: [true, "Please provide the total stock"],
   },
   colorAvailable: {
     type: String,
-    required: [true, "Please provide available color"],
-  },
-  age: {
-    type: String,
-    required: [true, "Please provide pet age"],
-  },
-  breed: {
-    type: String,
-    required: [true, "Please provide pet breed"],
-  },
-  color: {
-    type: [String],
     required: [true, "Please provide available color"],
   },
   user: [
