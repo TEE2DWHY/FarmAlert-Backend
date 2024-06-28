@@ -27,6 +27,8 @@ const agentRouter = require("./routes/agent/agent");
 const farmRouter = require("./routes/farm/farm");
 const lgaRouter = require("./routes/lga");
 const orderRouter = require("./routes/order/order");
+const productRouter = require("./routes/product/product");
+
 // middleware
 app.use(express.json());
 app.use(cors());
@@ -48,6 +50,7 @@ app.use("/dog", authorization, upload.single("dogImage"), dogRouter);
 app.use("/sales", authorization, upload.single("image"), salesRouterCattle);
 app.use("/sales", authorization, upload.single("image"), salesRouterDog);
 app.use("/order", authorization, orderRouter);
+app.use("/product", authorization, upload.single("image"), productRouter);
 app.use(userRouter, agentRouter, lgaRouter);
 app.use(express.static("./public"));
 app.use(errorHandler);

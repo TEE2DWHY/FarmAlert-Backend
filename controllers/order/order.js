@@ -14,21 +14,6 @@ const createResponseData = (payload, hasErrors, message) => {
 
 const PAYSTACK_KEY = process.env.PAYSTACK_KEY;
 
-// create new order
-// const createOrder = asyncWrapper(async (req, res) => {
-//   const { id } = req.currentUser;
-//   const Order = await Order.create({ ...req.body, user: id });
-//   res.status(StatusCodes.OK).json(
-//     createResponseData(
-//       {
-//         Order: Order,
-//       },
-//       false,
-//       "New Order Added successfully."
-//     )
-//   );
-// });
-
 // get Order
 const getOrder = asyncWrapper(async (req, res) => {
   const { orderId } = req.params;
@@ -228,7 +213,6 @@ const updateTransactionStatus = asyncWrapper(async (req, res) => {
 });
 
 module.exports = {
-  // createOrder,
   createPayment,
   getTransactionStatus,
   updateTransactionStatus,
