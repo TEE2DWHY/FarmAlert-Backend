@@ -48,9 +48,13 @@ const OrderSchema = new mongoose.Schema({
   totalCost: {
     type: String,
   },
-  transactionStatus: {
+  orderStatus: {
     type: Boolean,
     default: false,
+  },
+  product: {
+    type: mongoose.Types.ObjectId,
+    ref: "Product",
   },
   user: [
     {

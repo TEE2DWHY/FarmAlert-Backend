@@ -61,7 +61,7 @@ const getAllProducts = asyncWrapper(async (req, res) => {
         allProducts: allProducts,
       },
       false,
-      "All Products Returned  successfully."
+      "All Products Returned Successfully."
     )
   );
 });
