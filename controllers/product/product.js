@@ -66,4 +66,28 @@ const getAllProducts = asyncWrapper(async (req, res) => {
   );
 });
 
-module.exports = { createProduct, getAllProducts };
+// delete specific product
+const deleteProduct = asyncWrapper(async (req, res) => {
+  const { productId } = req.params;
+
+  // Check if the product exists
+  const product = await Product.findById(productId);
+  if (!product) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json(createResponseData(null, true, "Product not found."));
+  }
+
+  // Delete product from database
+  await Product.findByIdAndDelete(productId);
+
+  // Optionally, delete associated image from Cloudinary
+  // if (product.image) {
+  //   await cloudinary.uploader.destroy(product.image.public_id);
+  // }
+  res
+    .status(StatusCodes.OK)
+    .json(createResponseData(null, false, "Product deleted successfully."));
+});
+
+module.exports = { createProduct, getAllProducts, deleteProduct };
