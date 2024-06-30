@@ -2,13 +2,11 @@ const router = require("express").Router();
 const {
   createOrder,
   getOrder,
-  createPayment,
   getOrderStatus,
   updateTransactionStatus,
   getAllOrders,
 } = require("../../controllers/order/order");
 
-// router.post("/create", createOrder);
 router.get("/get-order/:id", getOrder);
 router.get("/get-order", getAllOrders);
 router.post("/create-order/:productId", createOrder);

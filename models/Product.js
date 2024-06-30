@@ -30,7 +30,7 @@ const ProductSchema = new mongoose.Schema({
     required: [true, "Please provide the total stock"],
   },
   colorAvailable: {
-    type: String,
+    type: [String],
     required: [true, "Please provide available color"],
   },
   user: [

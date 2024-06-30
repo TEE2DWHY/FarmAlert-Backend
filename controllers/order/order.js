@@ -70,6 +70,7 @@ const createPayment = (email, amount) => {
 const createOrder = asyncWrapper(async (req, res) => {
   const { id } = req.currentUser; // Assuming currentUser contains user ID
   const { productId } = req.params;
+  console.log(productId);
 
   // Validate productId
   if (!productId) {
