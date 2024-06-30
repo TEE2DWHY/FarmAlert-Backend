@@ -14,24 +14,94 @@ const createResponseData = (payload, hasErrors, message) => {
 
 const PAYSTACK_KEY = process.env.PAYSTACK_KEY;
 
+const createPayment = (email, amount) => {
+  return new Promise((resolve, reject) => {
+    const PAYSTACK_KEY = process.env.PAYSTACK_KEY;
+
+    if (!PAYSTACK_KEY) {
+      reject(new Error("Paystack key is not provided"));
+      return;
+    }
+
+    const params = JSON.stringify({
+      email: email,
+      amount: amount * 100, // convert to kobo (Paystack requires amount in kobo)
+    });
+
+    const options = {
+      hostname: "api.paystack.co",
+      port: 443,
+      path: "/transaction/initialize",
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${PAYSTACK_KEY}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const request = https.request(options, (response) => {
+      let txData = "";
+
+      response.on("data", (chunk) => {
+        txData += chunk;
+      });
+
+      response.on("end", () => {
+        const responseData = JSON.parse(txData);
+        const { data } = responseData;
+        resolve({
+          paymentUrl: data.authorization_url,
+          reference: data.reference,
+          accessCode: data.access_code,
+        });
+      });
+    });
+
+    request.on("error", (error) => {
+      reject(error);
+    });
+
+    request.write(params);
+    request.end();
+  });
+};
+
+// Function to create an order with integrated payment
 const createOrder = asyncWrapper(async (req, res) => {
-  const { id } = req.currentUser;
+  const { id } = req.currentUser; // Assuming currentUser contains user ID
   const { productId } = req.params;
+
+  // Validate productId
   if (!productId) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json(createResponseData(null, true, "Please Provide Product Id."));
+      .json(createResponseData(null, true, "Please provide Product Id."));
   }
-  const newOrder = await Order.create({ ...req.body, user: id });
-  return res.status(StatusCodes.OK).json(
-    createResponseData(
-      {
-        newOrder: newOrder,
-      },
-      false,
-      "Order Is Created successfully ."
-    )
-  );
+
+  try {
+    // Create the order
+    const newOrder = await Order.create({ ...req.body, user: id });
+
+    // Create payment with user's email and totalCost (assuming totalCost is in req.body)
+    const { email, totalCost } = req.body;
+    const paymentDetails = await createPayment(email, totalCost);
+
+    // Respond with order and payment details
+    res.status(StatusCodes.OK).json(
+      createResponseData(
+        {
+          newOrder,
+          paymentDetails,
+        },
+        false,
+        "Order created successfully with payment details."
+      )
+    );
+  } catch (err) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "An error occurred while processing your request.",
+    });
+  }
 });
 
 // get Order
@@ -78,67 +148,7 @@ const getAllOrders = asyncWrapper(async (req, res) => {
   );
 });
 
-//create payment page
-const createPayment = asyncWrapper(async (req, res) => {
-  console.log(PAYSTACK_KEY);
-  if (!req.body.email || !req.body.amount) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "Please provide both email and amount.",
-    });
-  }
-
-  const params = JSON.stringify({
-    email: req.body.email,
-    amount: req.body.amount * 100, // because paystack by default is in kobo
-  });
-
-  const options = {
-    hostname: "api.paystack.co",
-    port: 443,
-    path: "/transaction/initialize",
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${PAYSTACK_KEY}`,
-      "Content-Type": "application/json",
-    },
-  };
-
-  const request = https.request(options, (response) => {
-    let txData = "";
-
-    response.on("data", (chunk) => {
-      txData += chunk;
-    });
-
-    response.on("end", () => {
-      const responseData = JSON.parse(txData);
-      const { data } = responseData;
-      res.status(response.statusCode).json(
-        createResponseData(
-          {
-            paymentUrl: data.authorization_url,
-            reference: data.reference,
-            accessCode: data.access_code,
-          },
-          false,
-          "Payment Url Returned Successfully."
-        )
-      );
-    });
-  });
-
-  request.on("error", (error) => {
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while processing your request." });
-  });
-
-  request.write(params);
-  request.end();
-});
-
-const getTransactionStatus = asyncWrapper(async (req, res) => {
+const getOrderStatus = asyncWrapper(async (req, res) => {
   try {
     const { reference } = req.params;
     if (!reference) {
@@ -234,8 +244,7 @@ const updateTransactionStatus = asyncWrapper(async (req, res) => {
 
 module.exports = {
   createOrder,
-  createPayment,
-  getTransactionStatus,
+  getOrderStatus,
   updateTransactionStatus,
   getAllOrders,
   getOrder,
