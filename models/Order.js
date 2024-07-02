@@ -37,6 +37,7 @@ const OrderSchema = new mongoose.Schema({
   product: {
     type: mongoose.Types.ObjectId,
     ref: "Product",
+    required: [true, "Please Provide Product Id."],
   },
   paymentDetails: {
     paymentUrl: {

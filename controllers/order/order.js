@@ -87,6 +87,7 @@ const createOrder = asyncWrapper(async (req, res) => {
     const newOrder = await Order.create({
       ...req.body,
       user: id,
+      productId: productId,
       paymentDetails,
     });
 
