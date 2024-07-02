@@ -70,7 +70,6 @@ const createPayment = (email, amount) => {
 const createOrder = asyncWrapper(async (req, res) => {
   const { id } = req.currentUser; // Assuming currentUser contains user ID
   const { productId } = req.params;
-  console.log(productId);
 
   // Validate productId
   if (!productId) {
@@ -80,12 +79,16 @@ const createOrder = asyncWrapper(async (req, res) => {
   }
 
   try {
-    // Create the order
-    const newOrder = await Order.create({ ...req.body, user: id });
-
-    // Create payment with user's email and totalCost (assuming totalCost is in req.body)
+    // Generate payment details
     const { email, totalCost } = req.body;
     const paymentDetails = await createPayment(email, totalCost);
+
+    // Create the order with paymentDetails included
+    const newOrder = await Order.create({
+      ...req.body,
+      user: id,
+      paymentDetails,
+    });
 
     // Respond with order and payment details
     res.status(StatusCodes.OK).json(
@@ -99,6 +102,7 @@ const createOrder = asyncWrapper(async (req, res) => {
       )
     );
   } catch (err) {
+    console.error("Error creating order:", err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       error: "An error occurred while processing your request.",
     });
@@ -168,6 +172,7 @@ const getOrderStatus = asyncWrapper(async (req, res) => {
     }
 
     const { reference } = order.paymentDetails;
+    console.log(reference);
 
     const options = {
       hostname: "api.paystack.co",
