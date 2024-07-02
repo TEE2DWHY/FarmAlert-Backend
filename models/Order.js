@@ -29,6 +29,7 @@ const OrderSchema = new mongoose.Schema({
   orderStatus: {
     type: String,
     enum: ["Paid", "Pending", "Successful", "Reversed", "Failed"],
+    default: pending,
   },
   product: {
     type: mongoose.Types.ObjectId,
