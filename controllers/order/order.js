@@ -95,7 +95,6 @@ const createOrder = asyncWrapper(async (req, res) => {
       createResponseData(
         {
           newOrder,
-          paymentDetails,
         },
         false,
         "Order created successfully with payment details."
