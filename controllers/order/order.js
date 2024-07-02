@@ -224,6 +224,7 @@ const getOrderStatus = asyncWrapper(async (req, res) => {
                 {
                   id: data.id,
                   status: data.status,
+                  paymentUrl: data.paymentUrl,
                   reference: data.reference,
                   amount: data.amount / 100,
                   email: data.customer.email,
