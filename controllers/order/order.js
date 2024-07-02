@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const asyncWrapper = require("../../middleware/asyncWrapper");
 const Order = require("../../models/Order");
 const https = require("https");
+const Product = require("../../models/Product");
 
 // Function to create consistent response data
 const createResponseData = (payload, hasErrors, message) => {
@@ -123,10 +124,13 @@ const getOrder = asyncWrapper(async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json(createResponseData(null, true, "Order Does Not Exist."));
   }
+  const product = await Product.findById({ _id: order.productId });
+
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
         order: order,
+        product: product,
       },
       false,
       "Order Is Fetched successfully ."
@@ -136,16 +140,23 @@ const getOrder = asyncWrapper(async (req, res) => {
 
 // get all orders
 const getAllOrders = asyncWrapper(async (req, res) => {
-  const order = await Order.find();
-  if (order.length === 0) {
+  const orders = await Order.find();
+  if (orders.length === 0) {
     return res
       .status(StatusCodes.OK)
       .json(createResponseData({}, false, "User hasn't created any Order."));
   }
+  const getOrderProduct = orders.map(async (order) => {
+    const product = await Product.findById({ _id: order.productId });
+    return {
+      order: order,
+      product: product,
+    };
+  });
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        order: order,
+        getOrderProduct,
       },
       false,
       "Orders Fetched successfully ."

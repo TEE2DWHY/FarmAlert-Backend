@@ -34,7 +34,7 @@ const OrderSchema = new mongoose.Schema({
     enum: ["pending", "successful", "reversed", "failed"],
     default: "pending",
   },
-  product: {
+  productId: {
     type: mongoose.Types.ObjectId,
     ref: "Product",
     required: [true, "Please Provide Product Id."],
