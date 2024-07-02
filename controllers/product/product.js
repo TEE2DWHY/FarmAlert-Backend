@@ -90,4 +90,32 @@ const deleteProduct = asyncWrapper(async (req, res) => {
     .json(createResponseData(null, false, "Product deleted successfully."));
 });
 
-module.exports = { createProduct, getAllProducts, deleteProduct };
+const updateProductColors = asyncWrapper(async (req, res) => {
+  const { productId } = req.params;
+  const { colors } = req.body;
+
+  // Check if the product exists
+  const product = await Product.findById(productId);
+  if (!product) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json(createResponseData(null, true, "Product not found."));
+  }
+
+  // Push new colors to the existing array
+  product.colorAvailable.push(...colors);
+  await product.save();
+
+  res
+    .status(StatusCodes.OK)
+    .json(
+      createResponseData({ product }, false, "Colors updated successfully.")
+    );
+});
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  deleteProduct,
+  updateProductColors,
+};

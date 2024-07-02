@@ -23,34 +23,12 @@ const OrderSchema = new mongoose.Schema({
       required: [true, "Please provide shipping address"],
     },
   },
-  petDetails: {
-    petName: {
-      type: String,
-      required: [true, "Please provide petName"],
-    },
-    age: {
-      type: String,
-      required: [true, "Please provide pet age"],
-    },
-    breed: {
-      type: String,
-      required: [true, "Please provide pet breed"],
-    },
-    color: {
-      type: String,
-      required: [true, "Please provide pet color"],
-    },
-    farmOwned: {
-      type: String,
-      required: [true, "Please provide farm owned"],
-    },
-  },
   totalCost: {
     type: String,
   },
   orderStatus: {
-    type: Boolean,
-    default: false,
+    type: String,
+    enum: ["Paid", "Pending", "Successful", "Reversed", "Failed"],
   },
   product: {
     type: mongoose.Types.ObjectId,
