@@ -38,6 +38,17 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "Product",
   },
+  paymentDetails: {
+    paymentUrl: {
+      type: String,
+    },
+    reference: {
+      type: String,
+    },
+    accessCode: {
+      type: String,
+    },
+  },
   user: [
     {
       type: mongoose.Types.ObjectId,
