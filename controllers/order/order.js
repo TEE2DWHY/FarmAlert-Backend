@@ -151,12 +151,24 @@ const getAllOrders = asyncWrapper(async (req, res) => {
 
 const getOrderStatus = asyncWrapper(async (req, res) => {
   try {
-    const { reference } = req.params;
-    if (!reference) {
+    const { orderId } = req.params;
+    if (!orderId) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Please provide a transaction reference number",
+        message: "Please provide an order ID",
       });
     }
+
+    // Fetch order details from your database to get the reference
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "Order not found",
+      });
+    }
+
+    const { reference } = order.paymentDetails;
+
     const options = {
       hostname: "api.paystack.co",
       port: 443,
@@ -166,12 +178,13 @@ const getOrderStatus = asyncWrapper(async (req, res) => {
         Authorization: `Bearer ${PAYSTACK_KEY}`,
       },
     };
+
     const request = https.request(options, (response) => {
       let txData = "";
       response.on("data", (chunk) => {
         txData += chunk;
       });
-      response.on("end", () => {
+      response.on("end", async () => {
         try {
           const responseData = JSON.parse(txData);
 
@@ -185,6 +198,39 @@ const getOrderStatus = asyncWrapper(async (req, res) => {
           const { data } = responseData;
           console.log(responseData); // Log the response data for debugging
 
+          // Check if the order status indicates a successful transaction
+          if (data.status === "success") {
+            // Update transaction status in your MongoDB
+            const updatedOrder = await Order.findByIdAndUpdate(
+              orderId,
+              { $set: { orderStatus: "successful" } },
+              { new: true }
+            );
+
+            if (!updatedOrder) {
+              return res.status(StatusCodes.NOT_FOUND).json({
+                error: "Order does not exist or could not be updated.",
+              });
+            }
+
+            // Return response with updated order details
+            return res.status(response.statusCode).json(
+              createResponseData(
+                {
+                  id: data.id,
+                  status: data.status,
+                  reference: data.reference,
+                  amount: data.amount / 100,
+                  email: data.customer.email,
+                  updatedOrder: updatedOrder, // Include updated order details in response
+                },
+                false,
+                "Transaction Order Details Retrieved and Updated Successfully."
+              )
+            );
+          }
+
+          // Return response without updating transaction status if not successful
           res.status(response.statusCode).json(
             createResponseData(
               {
@@ -220,33 +266,33 @@ const getOrderStatus = asyncWrapper(async (req, res) => {
   }
 });
 
-const updateTransactionStatus = asyncWrapper(async (req, res) => {
-  const order = await Order.findByIdAndUpdate(
-    { _id: req.body.id },
-    { $set: { transactionStatus: true } },
-    { new: true }
-  );
-  if (!order) {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json(createResponseData(null, false, "Order does not exist."));
-  }
+// const updateTransactionStatus = asyncWrapper(async (req, res) => {
+//   const order = await Order.findByIdAndUpdate(
+//     { _id: req.body.id },
+//     { $set: { transactionStatus: true } },
+//     { new: true }
+//   );
+//   if (!order) {
+//     return res
+//       .status(StatusCodes.NOT_FOUND)
+//       .json(createResponseData(null, false, "Order does not exist."));
+//   }
 
-  res.status(StatusCodes.OK).json(
-    createResponseData(
-      {
-        Order: Order,
-      },
-      false,
-      "Transaction is successful."
-    )
-  );
-});
+//   res.status(StatusCodes.OK).json(
+//     createResponseData(
+//       {
+//         Order: Order,
+//       },
+//       false,
+//       "Transaction is successful."
+//     )
+//   );
+// });
 
 module.exports = {
   createOrder,
   getOrderStatus,
-  updateTransactionStatus,
+  // updateTransactionStatus,
   getAllOrders,
   getOrder,
 };

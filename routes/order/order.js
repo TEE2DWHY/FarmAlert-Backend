@@ -3,7 +3,7 @@ const {
   createOrder,
   getOrder,
   getOrderStatus,
-  updateTransactionStatus,
+  // updateTransactionStatus,
   getAllOrders,
 } = require("../../controllers/order/order");
 
@@ -11,6 +11,6 @@ router.get("/get-order/:id", getOrder);
 router.get("/get-order", getAllOrders);
 router.post("/create-order/:productId", createOrder);
 router.get("/transaction-status/:reference", getOrderStatus);
-router.patch("/update-transaction-status", updateTransactionStatus);
+// router.patch("/update-transaction-status", updateTransactionStatus);
 
 module.exports = router;
