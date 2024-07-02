@@ -7,7 +7,7 @@ const {
   getAllOrders,
 } = require("../../controllers/order/order");
 
-router.get("/get-order/:OrderId", getOrder);
+router.get("/get-order/:orderId", getOrder);
 router.get("/get-order", getAllOrders);
 router.post("/create-order/:productId", createOrder);
 router.get("/transaction-status/:orderId", getOrderStatus);
