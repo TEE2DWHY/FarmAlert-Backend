@@ -146,17 +146,10 @@ const getAllOrders = asyncWrapper(async (req, res) => {
       .status(StatusCodes.OK)
       .json(createResponseData({}, false, "User hasn't created any Order."));
   }
-  const getOrderProduct = orders.map(async (order) => {
-    const product = await Product.findById({ _id: order.productId });
-    return {
-      order: order,
-      product: product,
-    };
-  });
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        getOrderProduct,
+        orders: orders,
       },
       false,
       "Orders Fetched successfully ."
