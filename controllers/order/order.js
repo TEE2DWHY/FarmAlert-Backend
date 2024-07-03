@@ -131,7 +131,7 @@ const getOrder = asyncWrapper(async (req, res) => {
       {
         order: {
           ...order.toObject(),
-          ...product.toObject(),
+          product: product,
         },
       },
       false,
@@ -156,7 +156,7 @@ const getAllOrders = asyncWrapper(async (req, res) => {
       const product = await Product.findById(order.productId);
       return {
         ...order.toObject(),
-        ...product.toObject(),
+        product: product,
       };
     })
   );
