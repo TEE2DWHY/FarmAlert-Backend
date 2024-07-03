@@ -141,18 +141,31 @@ const getOrder = asyncWrapper(async (req, res) => {
 // get all orders
 const getAllOrders = asyncWrapper(async (req, res) => {
   const orders = await Order.find();
+
   if (orders.length === 0) {
     return res
       .status(StatusCodes.OK)
       .json(createResponseData({}, false, "User hasn't created any Order."));
   }
+
+  // Map through each order and fetch the associated product
+  const ordersWithProducts = await Promise.all(
+    orders.map(async (order) => {
+      const product = await Product.findById(order.productId);
+      return {
+        order: order,
+        product: product,
+      };
+    })
+  );
+
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        orders: orders,
+        orders: ordersWithProducts,
       },
       false,
-      "Orders Fetched successfully ."
+      "Orders Fetched successfully."
     )
   );
 });
@@ -276,33 +289,18 @@ const getOrderStatus = asyncWrapper(async (req, res) => {
   }
 });
 
-// const updateTransactionStatus = asyncWrapper(async (req, res) => {
-//   const order = await Order.findByIdAndUpdate(
-//     { _id: req.body.id },
-//     { $set: { transactionStatus: true } },
-//     { new: true }
-//   );
-//   if (!order) {
-//     return res
-//       .status(StatusCodes.NOT_FOUND)
-//       .json(createResponseData(null, false, "Order does not exist."));
-//   }
-
-//   res.status(StatusCodes.OK).json(
-//     createResponseData(
-//       {
-//         Order: Order,
-//       },
-//       false,
-//       "Transaction is successful."
-//     )
-//   );
-// });
+// @NOTE: this should be used sparingly
+const deleteAllOrders = asyncWrapper(async (req, res) => {
+  await Order.deleteMany({});
+  res
+    .status(StatusCodes.OK)
+    .json(createResponseData(null, false, "All orders deleted successfully."));
+});
 
 module.exports = {
   createOrder,
   getOrderStatus,
-  // updateTransactionStatus,
   getAllOrders,
   getOrder,
+  deleteAllOrders,
 };
