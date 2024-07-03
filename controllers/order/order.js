@@ -129,8 +129,10 @@ const getOrder = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        order: order,
-        product: product,
+        order: {
+          order, // Convert Mongoose document to plain object
+          product: product, // Nested product object
+        },
       },
       false,
       "Order Is Fetched successfully ."
@@ -153,8 +155,7 @@ const getAllOrders = asyncWrapper(async (req, res) => {
     orders.map(async (order) => {
       const product = await Product.findById(order.productId);
       return {
-        order: order,
-        product: product,
+        order: { order, product },
       };
     })
   );
