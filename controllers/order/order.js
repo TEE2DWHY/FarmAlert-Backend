@@ -129,8 +129,10 @@ const getOrder = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(
     createResponseData(
       {
-        ...order.toObject(),
-        ...product.toObject(),
+        order: {
+          ...order.toObject(),
+          ...product.toObject(),
+        },
       },
       false,
       "Order Is Fetched successfully ."
