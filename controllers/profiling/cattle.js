@@ -62,22 +62,21 @@ const registerCattle = asyncWrapper(async (req, res) => {
 const allCattle = asyncWrapper(async (req, res) => {
   const cattle = await Cattle.find();
   if (cattle.length === 0) {
-    res
+    return res
       .status(StatusCodes.OK)
       .json(createResponseData(null, false, "No Cattle is Found in Database."));
-  } else {
-    res.status(StatusCodes.OK).json(
-      createResponseData(
-        {
-          allCattle: cattle.map((items) => {
-            return items;
-          }),
-        },
-        false,
-        "All Cattle Found in Database."
-      )
-    );
   }
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        allCattle: cattle.map((items) => {
+          return items;
+        }),
+      },
+      false,
+      "All Cattle Found in Database."
+    )
+  );
 });
 
 // Get A Specific Cattle

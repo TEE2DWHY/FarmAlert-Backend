@@ -34,6 +34,7 @@ const allUsers = asyncWrapper(async (req, res) => {
 // Get a Specific User
 const getUser = asyncWrapper(async (req, res) => {
   const { id } = req.currentUser;
+  console.log(id);
   const user = await User.findOne({ _id: id });
   if (!user) {
     return res

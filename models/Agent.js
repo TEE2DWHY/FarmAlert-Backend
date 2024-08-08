@@ -59,6 +59,10 @@ const agentSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Password"],
   },
+  role: {
+    type: String,
+    default: "agent",
+  },
 });
 
 module.exports = mongoose.model("Agent", agentSchema);

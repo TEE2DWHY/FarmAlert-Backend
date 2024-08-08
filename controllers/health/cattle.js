@@ -74,7 +74,12 @@ const getVaccinatedAnimals = asyncWrapper(async (req, res) => {
 });
 
 const createMedication = asyncWrapper(async (req, res) => {
-  const { id, name } = req.currentUser;
+  const { id, name, role } = req.currentUser;
+  // if (role !== "veterinarian") {
+  //   return res.status(StatusCodes.BAD_REQUEST).json({
+  //     message: "Only Vet Can Create A Medication.",
+  //   });
+  // }
   const medication = await Health.Medication.create({
     createdBy: {
       _id: id,
@@ -127,6 +132,16 @@ const getMedicatedAnimals = asyncWrapper(async (req, res) => {
       "Medication Data is Returned Successfully."
     )
   );
+});
+
+const getMedicationByTagId = asyncWrapper(async (req, res) => {
+  const { tagId } = req.query;
+  if (!tagId) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Please Provide Tag Id.",
+    });
+  }
+  // const medicatedAnimal = await Cattle.find
 });
 
 const createPregnancy = asyncWrapper(async (req, res) => {
