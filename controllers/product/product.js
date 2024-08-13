@@ -66,6 +66,76 @@ const getAllProducts = asyncWrapper(async (req, res) => {
   );
 });
 
+const getProductsByCategory = asyncWrapper(async (req, res) => {
+  const { category } = req.params;
+  // Validate the category input
+  if (!["Cattle", "Pet"].includes(category)) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(
+        createResponseData(null, true, `${category} is not a valid category.`)
+      );
+  }
+  const products = await Product.find({ category });
+  if (products.length === 0) {
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        createResponseData(
+          null,
+          false,
+          `No products found in the ${category} category.`
+        )
+      );
+  }
+
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        products,
+      },
+      false,
+      `Products in the ${category} category returned successfully.`
+    )
+  );
+});
+
+const getProductByCategoryAndName = asyncWrapper(async (req, res) => {
+  const { category, name } = req.params;
+  if (!["Cattle", "Pet"].includes(category)) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(
+        createResponseData(null, true, `${category} is not a valid category.`)
+      );
+  }
+  // Find the product by category and name (case-insensitive search)
+  const product = await Product.findOne({
+    category,
+    name: { $regex: new RegExp(name, "i") },
+  });
+  if (!product) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json(
+        createResponseData(
+          null,
+          true,
+          `No product found in the ${category} category with the name ${name}.`
+        )
+      );
+  }
+  res.status(StatusCodes.OK).json(
+    createResponseData(
+      {
+        product,
+      },
+      false,
+      `Product in the ${category} category with the name ${name} returned successfully.`
+    )
+  );
+});
+
 // delete specific product
 const deleteProduct = asyncWrapper(async (req, res) => {
   const { productId } = req.params;
@@ -116,6 +186,8 @@ const updateProductColors = asyncWrapper(async (req, res) => {
 module.exports = {
   createProduct,
   getAllProducts,
+  getProductsByCategory,
+  getProductByCategoryAndName,
   deleteProduct,
   updateProductColors,
 };

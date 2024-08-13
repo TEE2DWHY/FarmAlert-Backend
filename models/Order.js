@@ -7,7 +7,7 @@ const OrderSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, "Please provide product name"],
+    required: [true, "Please provide product description"],
   },
   color: {
     type: String,

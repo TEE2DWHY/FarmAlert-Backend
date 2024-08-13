@@ -25,6 +25,13 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Please provide the number stock sold"],
   },
+  category: {
+    type: String,
+    enum: {
+      values: ["Cattle", "Pet"],
+      message: "{VALUE} is not supported",
+    },
+  },
   totalStock: {
     type: Number,
     required: [true, "Please provide the total stock"],
