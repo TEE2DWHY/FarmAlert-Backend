@@ -28,7 +28,7 @@ const ProductSchema = new mongoose.Schema({
   category: {
     type: String,
     enum: {
-      values: ["Cattle", "Pet"],
+      values: ["cattle", "pet"],
       message: "{VALUE} is not supported",
     },
   },

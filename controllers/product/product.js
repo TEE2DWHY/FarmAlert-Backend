@@ -67,9 +67,9 @@ const getAllProducts = asyncWrapper(async (req, res) => {
 });
 
 const getProductsByCategory = asyncWrapper(async (req, res) => {
-  const { category } = req.params;
+  const { category } = req.query;
   // Validate the category input
-  if (!["Cattle", "Pet"].includes(category)) {
+  if (!["cattle", "pet"].includes(category)) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -101,8 +101,8 @@ const getProductsByCategory = asyncWrapper(async (req, res) => {
 });
 
 const getProductByCategoryAndName = asyncWrapper(async (req, res) => {
-  const { category, name } = req.params;
-  if (!["Cattle", "Pet"].includes(category)) {
+  const { category, name } = req.query;
+  if (!["cattle", "pet"].includes(category)) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
